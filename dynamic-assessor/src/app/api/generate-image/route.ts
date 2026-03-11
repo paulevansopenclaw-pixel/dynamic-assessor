@@ -11,7 +11,7 @@ export async function POST(req: Request) {
 
     // Google Imagen / Vertex / AI Studio integration stub
     // Using the official generative language API for Imagen (if available on the key)
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-images:predict?key=${apiKey}`, {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-fast-generate-001:predict?key=${apiKey}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
