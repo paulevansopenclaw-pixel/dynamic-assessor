@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Assessor - Visual Prototype</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #ffcc00;
+            padding: 15px;
+            border-radius: 8px 8px 0 0;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #222;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .chat-container {
+            background: white;
+            padding: 20px;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+        }
+        .message {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            max-width: 90%;
+            line-height: 1.5;
+            font-size: 1.05rem;
+        }
+        .avatar-msg {
+            background-color: #f8f9fa;
+            align-self: flex-start;
+            border-left: 4px solid #0056b3;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .avatar-msg strong {
+            color: #0056b3;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .citation {
+            font-size: 0.85em;
+            color: #495057;
+            margin-top: 12px;
+            background-color: #e9ecef;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-style: italic;
+            display: flex;
+            align-items: flex-start;
+            gap: 6px;
+        }
+        .options-grid {
+            margin-top: auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .visual-btn {
+            background-color: #ffffff;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 10px;
+        }
+        .visual-btn:hover {
+            border-color: #0056b3;
+            background-color: #f0f7ff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,86,179,0.1);
+        }
+        .emoji-placeholder {
+            font-size: 3rem;
+            margin-bottom: 5px;
+        }
+        .btn-label {
+            font-weight: 600;
+            color: #333;
+        }
+        .btn-desc {
+            font-size: 0.85rem;
+            color: #666;
+        }
+        .reset-btn {
+            grid-column: 1 / -1; /* Span full width */
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+            flex-direction: row;
+            justify-content: center;
+        }
+        .reset-btn:hover {
+            background-color: #f5c6cb;
+            border-color: #f1b0b7;
+            transform: none;
+            box-shadow: none;
+        }
+        .diagram-img {
+            max-width: 100%;
+            border-radius: 6px;
+            margin-top: 15px;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <span>🚧 Dynamic Assessor - Visual Mode</span>
+    </div>
+    
+    <div class="chat-container" id="chat">
+        <!-- Chat injected here -->
+    </div>
+
+    <script>
+        const chatDiv = document.getElementById('chat');
+
+        // Note: Using emojis and colored blocks to simulate photos for this rapid prototype
+        const scenario = {
+            start: {
+                text: "Site compliance check. What physical control are we looking at right now?",
+                options: [
+                    { 
+                        emoji: "🚧", 
+                        label: "Sediment Fence", 
+                        desc: "Geofabric barriers along contours",
+                        next: "step1" 
+                    },
+                    { 
+                        emoji: "🕳️", 
+                        label: "Stormwater Inlet", 
+                        desc: "Gully pits and drop drains",
+                        next: "wip" 
+                    }
+                ]
+            },
+            step1: {
+                text: "Alright, let's look at the fence. Tap the image that best matches the failure you are seeing on site:",
+                options: [
+                    { 
+                        emoji: "🌊⬇️", 
+                        label: "Undercutting", 
+                        desc: "Water is washing a gap underneath the bottom fabric",
+                        next: "step2" 
+                    },
+                    { 
+                        emoji: "🌊⤴️", 
+                        label: "Overtopping", 
+                        desc: "Muddy water is pouring right over the top edge",
+                        next: "overtop" 
+                    },
+                    { 
+                        emoji: "↪️", 
+                        label: "Bypassing", 
+                        desc: "Water is running around the very ends of the fence",
+                        next: "bypass" 
+                    },
+                    { 
+                        emoji: "〽️", 
+                        label: "Collapsing", 
+                        desc: "The fence is bowing or falling over completely",
+                        next: "collapse" 
+                    }
+                ]
+            },
+            step2: {
+                text: "That's undercutting. The fence installation has failed at the ground level. You need to check the trenching. <br><br>Was the geofabric buried 150mm deep and backfilled with compacted soil, or just pinned to the surface with gravel?",
+                options: [
+                    { 
+                        emoji: "📌", 
+                        label: "Pinned to surface", 
+                        desc: "They just put gravel or pegs on it",
+                        next: "resolution_pinned" 
+                    },
+                    { 
+                        emoji: "⛏️", 
+                        label: "Trenched 150mm", 
+                        desc: "It was dug in properly",
+                        next: "resolution_trenched" 
+                    }
+                ]
+            },
+            resolution_pinned: {
+                text: "There is your problem. Gravel or pins won't seal it. You must re-trench the fabric 150mm deep and backfill it with compacted soil. The water must pool against it, not run under. Get the contractor to fix that immediately.",
+                citation: "Source: Landcom Blue Book Vol 1, Standard Drawing SD 6-8",
+                diagram: "https://placehold.co/500x250/0056b3/ffffff?text=Diagram:+150mm+Trench+Detail",
+                options: [{ emoji: "🔄", label: "Start Over", next: "start", isReset: true }]
+            },
+            overtop: {
+                text: "Check the catchment area. A single sediment fence can only handle 0.6 hectares per 100 meters. If the catchment is larger, you must install an intermediate fence upslope to reduce the load.",
+                citation: "Source: Landcom Blue Book Vol 1, Section 6.3.2, Page 124",
+                diagram: "https://placehold.co/500x250/0056b3/ffffff?text=Diagram:+Max+Catchment+0.6ha",
+                options: [{ emoji: "🔄", label: "Start Over", next: "start", isReset: true }]
+            },
+            bypass: {
+                text: "You need to create a return. Turn the ends of the fence upslope for at least 1.5 meters so the water is forced to pool in the center rather than bypassing the edges.",
+                citation: "Source: Landcom Blue Book Vol 1, Section 6.3.2",
+                diagram: "https://placehold.co/500x250/0056b3/ffffff?text=Diagram:+Upslope+Returns",
+                options: [{ emoji: "🔄", label: "Start Over", next: "start", isReset: true }]
+            },
+            collapse: {
+                text: "Check your star picket spacing. They must be driven at least 600mm into the ground and spaced no further than 2.5 meters apart. Install additional pickets immediately.",
+                citation: "Source: Landcom Blue Book Vol 1, Standard Drawing SD 6-8",
+                diagram: "https://placehold.co/500x250/0056b3/ffffff?text=Diagram:+2.5m+Picket+Spacing",
+                options: [{ emoji: "🔄", label: "Start Over", next: "start", isReset: true }]
+            },
+            resolution_trenched: {
+                text: "If it's trenched correctly but still undercutting, the soil might be highly dispersive or the trench wasn't compacted properly. Check the compaction.",
+                citation: "Source: Landcom Blue Book Vol 1, Section 6.3.2",
+                options: [{ emoji: "🔄", label: "Start Over", next: "start", isReset: true }]
+            },
+            wip: {
+                text: "The Stormwater Inlet protection module is currently under development. Let's stick to Sediment Fences for this demo.",
+                options: [{ emoji: "⬅️", label: "Go Back", next: "start", isReset: true }]
+            }
+        };
+
+        function renderNode(nodeId) {
+            const node = scenario[nodeId];
+            chatDiv.innerHTML = ''; 
+
+            // Add Avatar Message
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'message avatar-msg';
+            
+            let msgHTML = `<strong>👤 Avatar Assessor</strong>${node.text}`;
+            
+            if(node.diagram) {
+                msgHTML += `<img src="${node.diagram}" class="diagram-img" alt="Technical Diagram">`;
+            }
+
+            if(node.citation) {
+                msgHTML += `<div class="citation">📑 ${node.citation}</div>`;
+            }
+            msgDiv.innerHTML = msgHTML;
+            chatDiv.appendChild(msgDiv);
+
+            // Add Visual Options Grid
+            const optsDiv = document.createElement('div');
+            optsDiv.className = 'options-grid';
+            
+            node.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = opt.isReset ? 'visual-btn reset-btn' : 'visual-btn';
+                
+                btn.innerHTML = `
+                    <div class="emoji-placeholder">${opt.emoji}</div>
+                    <div class="btn-label">${opt.label}</div>
+                    ${opt.desc ? `<div class="btn-desc">${opt.desc}</div>` : ''}
+                `;
+                
+                btn.onclick = () => renderNode(opt.next);
+                optsDiv.appendChild(btn);
+            });
+            
+            chatDiv.appendChild(optsDiv);
+        }
+
+        renderNode('start');
+    </script>
+</body>
+</html>
