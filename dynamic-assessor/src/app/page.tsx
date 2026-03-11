@@ -50,7 +50,12 @@ export default function Home() {
 
   useEffect(() => {
     // Load data from DB on mount
-    getModules().then(res => setModulesList(res as unknown as ModuleData[]));
+    getModules().then(res => {
+      console.log("Loaded modules:", res);
+      setModulesList(res as unknown as ModuleData[]);
+    }).catch(err => {
+      console.error("Failed to load modules:", err);
+    });
   }, []);
 
   const speakText = async (text: string) => {
