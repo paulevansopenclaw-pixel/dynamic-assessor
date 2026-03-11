@@ -1,19 +1,27 @@
 import { PrismaClient } from '@prisma/client'
-import data from './src/app/data.json'
+import fs from 'fs'
+import { fileURLToPath } from 'url'
+import path from 'path'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 const prisma = new PrismaClient()
 
 async function main() {
-  console.log("Cleaning database...")
-  await prisma.scenario.deleteMany({})
-  await prisma.module.deleteMany({})
+  const dataPath = path.join(__dirname, 'src/app/data.json')
+  const data = JSON.parse(fs.readFileSync(dataPath, 'utf8'))
 
-  console.log("Seeding database with updated categories...")
+  console.log("Cleaning database...")
+  await prisma.scenario.deleteMany()
+  await prisma.module.deleteMany()
+
+  console.log("Seeding V2 database...")
   for (const module of data.modules) {
     const createdModule = await prisma.module.create({
       data: {
         name: module.module_name,
-        category: module.category,
+        category: module.category || "Uncategorized",
         complianceAnchor: module.compliance_anchor,
       }
     })
@@ -24,14 +32,13 @@ async function main() {
           symptoms: JSON.stringify(scenario.symptom),
           diagnosticQuestion: scenario.diagnostic_question,
           branches: JSON.stringify(scenario.branches),
-          technicalSpecs: (scenario as any).technical_specs || null,
-          videoUrl: (scenario as any).video_url || null,
+          technicalSpecs: scenario.technical_specs || null,
           moduleId: createdModule.id
         }
       })
     }
   }
-  console.log("Database seeded successfully.")
+  console.log("V2 Database seeded successfully.")
 }
 
 main()

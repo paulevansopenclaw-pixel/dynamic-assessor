@@ -1,98 +1,64 @@
 {
   "project": "Dynamic Assessor",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "modules": [
     {
       "module_name": "Sediment_Fence_Troubleshooting",
-      "category": "Sediment Controls",
-      "compliance_anchor": "Landcom Blue Book Vol 1, 4th Edition - Section 6.3.2",
+      "category": "Sediment Control",
+      "compliance_anchor": "Landcom Blue Book Vol 1, 4th Edition",
       "scenarios": [
         {
           "id": "sf_001",
           "symptom": ["overflowing", "bowing", "collapsing"],
           "diagnostic_question": "Is the water overtopping the fabric, or is the fence physically bowing under the weight?",
-          "technical_specs": "Max catchment: 0.6ha per 100m. Max pole spacing: 2.5m.",
+          "technical_specs": "Max catchment: 0.6ha per 100m. Max picket spacing: 2.5m.",
           "branches": {
-            "overtopping": "Check the catchment area. A single sediment fence can only handle 0.6 hectares per 100 meters. If catchment is too large, install an additional fence upslope.",
-            "bowing": "Check your star picket spacing. They must be spaced no further than 2.5 meters apart. Install extra pickets immediately to support the weight."
+            "overtopping": "Check the catchment area. A single sediment fence can only handle 0.6 hectares per 100 meters.",
+            "bowing": "Check your star picket spacing. They must be spaced no further than 2.5 meters apart."
           }
         },
         {
           "id": "sf_002",
           "symptom": ["washing underneath", "undercutting", "gap at the bottom"],
           "diagnostic_question": "Was the geofabric trenched 150mm into the soil and backfilled, or just pinned to the surface?",
-          "technical_specs": "Trenching requirement: 150mm deep, backfilled and compacted.",
+          "technical_specs": "Geofabric must be trenched 150mm deep and backfilled with compacted soil.",
           "branches": {
-            "pinned": "The installation has failed. You must re-trench the fabric 150mm deep and backfill it with compacted soil to create a seal."
+            "pinned": "The installation has failed. You must re-trench the fabric 150mm deep and backfill it with compacted soil."
           }
         }
       ]
     },
     {
       "module_name": "Stockpile_Management",
-      "category": "Erosion Controls",
+      "category": "Erosion Control",
       "compliance_anchor": "Landcom Blue Book Vol 1, 4th Edition - Section 4.3.2",
       "scenarios": [
         {
           "id": "sp_001",
           "symptom": ["dust blowing off", "sediment washing into street", "stockpile bare"],
           "diagnostic_question": "Has this stockpile been inactive for more than 10 days, and is there a sediment fence installed on the downslope?",
-          "technical_specs": "Inactive stockpiles (>10 days) must be covered or stabilized.",
+          "technical_specs": "Inactive > 10 days requires cover/seeding. Fence must be 2m from downslope base.",
           "branches": {
-            "inactive_no_fence": "Violation. Stockpiles inactive for > 10 days must be covered or seeded, and must have a sediment fence on the downslope side. Fix immediately.",
+            "inactive_no_fence": "Violation. Stockpiles inactive for > 10 days must be covered or seeded, and must have a sediment fence on the downslope side.",
             "active_no_fence": "Even if active, you must install a sediment fence 2 meters from the downslope base to catch runoff.",
-            "inactive_with_fence": "Fence is good, but if it's inactive for > 10 days, you still need to apply a polymer dust binder or hydromulch to lock it down."
+            "inactive_with_fence": "Fence is good, but if it's inactive for > 10 days, you still need to apply a polymer dust binder or hydromulch."
           }
         }
       ]
     },
     {
-      "module_name": "Site_Entry_Audit",
-      "category": "Planning",
-      "compliance_anchor": "Landcom Blue Book Vol 1, 4th Edition - Section 2.2",
-      "scenarios": [
-        {
-          "id": "pl_001",
-          "symptom": ["No ESCP on site", "Missing map"],
-          "diagnostic_question": "Is the Erosion and Sediment Control Plan (ESCP) displayed at the site office or available digitally?",
-          "technical_specs": "Legislative requirement: ESCP must be current and on-site for all disturbed areas > 2500m2.",
-          "branches": {
-            "missing": "Major non-compliance. Stop work until the ESCP is located or a new one is drafted by the site engineer.",
-            "available": "Good. Ensure all contractors have been briefed on the specific controls for this stage."
-          }
-        }
-      ]
-    },
-    {
-      "module_name": "Routine_Maintenance",
+      "module_name": "Construction_Exits",
       "category": "Maintenance",
-      "compliance_anchor": "Landcom Blue Book Vol 1, 4th Edition - Section 8.2",
+      "compliance_anchor": "Landcom Blue Book Vol 1, 4th Edition - Section 7.1.1",
       "scenarios": [
         {
-          "id": "ma_001",
-          "symptom": ["After rain check", "Weekly inspection"],
-          "diagnostic_question": "Has it rained more than 5mm in the last 24 hours, and have you checked the sediment levels in all trapped areas?",
-          "technical_specs": "Inspection required: Weekly and within 24 hours of rain > 5mm.",
+          "id": "ce_001",
+          "symptom": ["mud on the public road", "shaker pad blinded over", "trucks tracking dirt"],
+          "diagnostic_question": "Is the exit aggregate clean and at least 200mm deep, or is it completely choked with mud?",
+          "technical_specs": "Shaker pad must be 50-75mm aggregate, at least 200mm deep on geotextile base.",
           "branches": {
-            "no_inspection": "Violation. Conduct a full site walk-through now and document any repairs needed in the site log.",
-            "complete": "Ensure any sediment removed is placed in a stabilized stockpile area, not near drains."
-          }
-        }
-      ]
-    },
-    {
-      "module_name": "EPA_Visit_Readiness",
-      "category": "Compliance",
-      "compliance_anchor": "Protection of the Environment Operations (POEO) Act 1997",
-      "scenarios": [
-        {
-          "id": "co_001",
-          "symptom": ["Inspector at gate", "EPA notification"],
-          "diagnostic_question": "Does the site have a dedicated logbook of all ESC maintenance and is the self-audit up to date?",
-          "technical_specs": "POEO Act: Site supervisors must provide evidence of due diligence to avoid environmental harm.",
-          "branches": {
-            "no_logbook": "High Risk. The EPA can issue 'Clean Up' notices or fines on the spot if due diligence (maintenance logs) cannot be proven.",
-            "logbook_ready": "Present the logbook to the inspector. Ensure all previous non-conformances have been signed off as repaired."
+            "choked_with_mud": "The shaker pad has failed. You must excavate the rock and install fresh aggregate at least 200mm deep.",
+            "mud_on_road": "Stop operations. Deploy a street sweeper immediately. Mud on public roads is a major EPA fine."
           }
         }
       ]
