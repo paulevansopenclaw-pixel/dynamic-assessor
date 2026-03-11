@@ -10,6 +10,7 @@ datasource db {
 model Module {
   id               String     @id @default(cuid())
   name             String
+  category         String     @default("Uncategorized")
   complianceAnchor String
   createdAt        DateTime   @default(now())
   scenarios        Scenario[]
@@ -20,6 +21,8 @@ model Scenario {
   symptoms           String
   diagnosticQuestion String
   branches           String
+  technicalSpecs     String?
+  videoUrl           String?
   moduleId           String
   createdAt          DateTime @default(now())
   module             Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
