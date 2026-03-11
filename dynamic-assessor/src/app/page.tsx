@@ -134,10 +134,28 @@ export default function Home() {
 
   const handleBranchSelect = (branchKey: string, branchAnswer: string) => {
     addMessage("user", branchKey.replace(/_/g, " "));
+
+    // Does this answer indicate a failure or a critical stop?
+    const isCritical = /(stop|violation|failed|immediately|fine|failed)/i.test(branchAnswer);
+
+    if (isCritical) {
+      const moduleName = selectedModule?.module_name.replace(/_/g, " ") || "Unknown Module";
+      const issue = Array.isArray(selectedScenario?.symptom) 
+        ? selectedScenario?.symptom.join(", ") 
+        : selectedScenario?.symptom || "Unknown Issue";
+
+      // Fire the Slack webhook in the background silently
+      fetch("/api/slack", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ moduleName, issue, answer: branchAnswer }),
+      }).catch(console.error);
+    }
     
     setTimeout(() => {
       const compliance = selectedModule ? ` (Ref: ${selectedModule.compliance_anchor})` : "";
-      addMessage("avatar", `${branchAnswer}${compliance}. Your competency is verified for this standard.`);
+      const passFailText = isCritical ? " This incident has been logged for review." : " Your competency is verified for this standard.";
+      addMessage("avatar", `${branchAnswer}${compliance}.${passFailText}`);
       setCurrentState("RESOLUTION");
     }, 600);
   };
