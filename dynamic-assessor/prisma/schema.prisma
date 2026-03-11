@@ -1,26 +1,26 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
-}
-
-generator client {
-  provider = "prisma-client-js"
 }
 
 model Module {
   id               String     @id @default(cuid())
   name             String
   complianceAnchor String
-  scenarios        Scenario[]
   createdAt        DateTime   @default(now())
+  scenarios        Scenario[]
 }
 
 model Scenario {
   id                 String   @id @default(cuid())
-  symptoms           String   // Storing JSON string array for simplicity in SQLite
+  symptoms           String
   diagnosticQuestion String
-  branches           String   // Storing JSON mapping for simplicity
+  branches           String
   moduleId           String
-  module             Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
   createdAt          DateTime @default(now())
+  module             Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
 }
