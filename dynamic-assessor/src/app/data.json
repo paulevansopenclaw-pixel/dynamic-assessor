@@ -1,0 +1,126 @@
+{
+  "project": "Dynamic Assessor",
+  "version": "1.0.0",
+  "modules": [
+    {
+      "module_name": "Sediment_Fence_Troubleshooting",
+      "compliance_anchor": "Landcom Blue Book Vol 1, 4th Edition",
+      "scenarios": [
+        {
+          "id": "sf_001",
+          "symptom": [
+            "overflowing",
+            "bowing",
+            "collapsing"
+          ],
+          "diagnostic_question": "Is the water overtopping the fabric, or is the fence physically bowing under the weight?",
+          "branches": {
+            "overtopping": "Check the catchment area. A single sediment fence can only handle 0.6 hectares per 100 meters.",
+            "bowing": "Check your star picket spacing. They must be spaced no further than 2.5 meters apart."
+          }
+        },
+        {
+          "id": "sf_002",
+          "symptom": [
+            "washing underneath",
+            "undercutting",
+            "gap at the bottom"
+          ],
+          "diagnostic_question": "Was the geofabric trenched 150mm into the soil and backfilled, or just pinned to the surface?",
+          "branches": {
+            "pinned": "The installation has failed. You must re-trench the fabric 150mm deep and backfill it with compacted soil."
+          }
+        }
+      ]
+    },
+    {
+      "module_name": "Stormwater_Inlet_Protection",
+      "compliance_anchor": "Landcom Blue Book Vol 1, 4th Edition - Section 6.3.6",
+      "scenarios": [
+        {
+          "id": "sip_001",
+          "symptom": [
+            "wrapped a sediment fence around the drain",
+            "geofabric on the grate"
+          ],
+          "diagnostic_question": "Is the geofabric laid flat over the grate, or wrapped around star pickets?",
+          "branches": {
+            "flat_on_grate": "Remove it immediately. Geofabric laid flat over a grate will blind over with mud in minutes. Use a block-and-gravel barrier."
+          }
+        }
+      ]
+    },
+    {
+      "module_name": "Sediment_Basin_Management",
+      "compliance_anchor": "Landcom Blue Book Vol 1, 4th Edition - Section 6.3.3",
+      "scenarios": [
+        {
+          "id": "sb_001",
+          "symptom": [
+            "basin is full of water",
+            "water not dropping",
+            "needs dewatering"
+          ],
+          "diagnostic_question": "Has it been more than 5 days since the rain stopped, and what is the current Total Suspended Solids (TSS) level?",
+          "branches": {
+            "less_than_50mg_L": "If TSS is under 50mg/L, you are clear to pump out or discharge the water to the designated outlet.",
+            "more_than_50mg_L": "The water is still turbid. You must treat it with a flocculant (like Gypsum) and wait for the sediment to settle before discharging.",
+            "raining_currently": "Do not dewater during an active rainfall event unless directed by the site engineer."
+          }
+        },
+        {
+          "id": "sb_002",
+          "symptom": [
+            "sediment buildup",
+            "basin looks shallow"
+          ],
+          "diagnostic_question": "Is the accumulated sediment level above the marked design capacity peg (usually 30% of total volume)?",
+          "branches": {
+            "above_the_peg": "The basin capacity is compromised. You need to excavate the settled sediment and dispose of it in an approved stockpile area immediately.",
+            "below_the_peg": "The basin is still within operational capacity, but monitor the sediment level after the next rain event."
+          }
+        }
+      ]
+    },
+    {
+      "module_name": "Stockpile_Management",
+      "compliance_anchor": "Landcom Blue Book Vol 1, 4th Edition - Section 4.3.2",
+      "scenarios": [
+        {
+          "id": "sp_001",
+          "symptom": [
+            "dust blowing off",
+            "sediment washing into street",
+            "stockpile bare"
+          ],
+          "diagnostic_question": "Has this stockpile been inactive for more than 10 days, and is there a sediment fence installed on the downslope?",
+          "branches": {
+            "inactive_no_fence": "Violation. Stockpiles inactive for > 10 days must be covered or seeded, and must have a sediment fence on the downslope side. Fix immediately.",
+            "active_no_fence": "Even if active, you must install a sediment fence 2 meters from the downslope base to catch runoff.",
+            "inactive_with_fence": "Fence is good, but if it's inactive for > 10 days, you still need to apply a polymer dust binder or hydromulch to lock it down."
+          }
+        }
+      ]
+    },
+    {
+      "module_name": "Construction_Exits",
+      "compliance_anchor": "Landcom Blue Book Vol 1, 4th Edition - Section 7.1.1",
+      "scenarios": [
+        {
+          "id": "ce_001",
+          "symptom": [
+            "mud on the public road",
+            "shaker pad blinded over",
+            "trucks tracking dirt"
+          ],
+          "diagnostic_question": "Is the exit aggregate clean and at least 200mm deep, or is it completely choked with mud?",
+          "branches": {
+            "choked_with_mud": "The shaker pad has failed. You must excavate the contaminated rock, lay a new geotextile base, and install fresh 50-75mm aggregate at least 200mm deep.",
+            "clean_aggregate": "If the pad is clean but trucks are still tracking mud, you need to enforce the use of the high-pressure wash-down bay before they hit the aggregate.",
+            "mud_on_road": "Stop operations. Deploy a street sweeper immediately. Mud on public roads is a major EPA fine."
+          }
+        }
+      ]
+    }
+  ]
+}

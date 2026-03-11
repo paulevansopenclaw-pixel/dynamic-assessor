@@ -1,0 +1,25 @@
+"use server";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
+
+export async function getModules() {
+  const modules = await prisma.module.findMany({
+    include: {
+      scenarios: true,
+    },
+  });
+  
+  // Serialize back to match the old JSON structure so the UI works exactly the same
+  return modules.map(mod => ({
+    id: mod.id,
+    module_name: mod.name,
+    compliance_anchor: mod.complianceAnchor,
+    scenarios: mod.scenarios.map(sc => ({
+      id: sc.id,
+      symptom: JSON.parse(sc.symptoms),
+      diagnostic_question: sc.diagnosticQuestion,
+      branches: JSON.parse(sc.branches)
+    }))
+  }));
+}
