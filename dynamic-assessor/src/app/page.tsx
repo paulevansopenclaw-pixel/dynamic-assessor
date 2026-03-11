@@ -26,7 +26,7 @@ interface Message {
   text: string;
 }
 
-type AppState = "PICK_CATEGORY" | "PICK_MODULE" | "PICK_SYMPTOM" | "PICK_BRANCH" | "RESOLUTION";
+type AppState = "PICK_CATEGORY" | "PICK_MODULE" | "PICK_SYMPTOM" | "PICK_BRANCH" | "VOICE_VERIFICATION" | "RESOLUTION";
 
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([
@@ -45,6 +45,8 @@ export default function Home() {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const [voiceEnabled, setVoiceEnabled] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [isCheckingCompetency, setIsCheckingCompetency] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -143,6 +145,54 @@ export default function Home() {
     }, 600);
   };
 
+  const startRecording = () => {
+    if (!('webkitSpeechRecognition' in window)) {
+      addMessage("avatar", "Voice recognition isn't supported in this browser. Try Chrome.");
+      return;
+    }
+
+    const recognition = new (window as any).webkitSpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.lang = 'en-AU';
+
+    recognition.onstart = () => {
+      setIsRecording(true);
+      addMessage("avatar", "I'm listening. Explain the technical requirement for this fix...");
+    };
+
+    recognition.onresult = async (event: any) => {
+      const transcript = event.results[0][0].transcript;
+      addMessage("user", transcript);
+      setIsRecording(false);
+      
+      setIsCheckingCompetency(true);
+      try {
+        const res = await fetch("/api/competency", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ 
+            transcript, 
+            technicalSpecs: selectedScenario?.technical_specs 
+          }),
+        });
+        const data = await res.json();
+        addMessage("avatar", data.feedback);
+        if (data.verified) {
+          setCurrentState("RESOLUTION");
+        }
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setIsCheckingCompetency(false);
+      }
+    };
+
+    recognition.onerror = () => setIsRecording(false);
+    recognition.onend = () => setIsRecording(false);
+    recognition.start();
+  };
+
   const handleBranchSelect = (branchKey: string, branchAnswer: string) => {
     addMessage("user", branchKey.replace(/_/g, " "));
     const isCritical = /(stop|violation|failed|immediately|fine|failed)/i.test(branchAnswer);
@@ -165,11 +215,12 @@ export default function Home() {
       
       if (selectedScenario?.technical_specs) {
         setTimeout(() => {
-          addMessage("specs", `Blue Book Requirement: ${selectedScenario.technical_specs}`);
+          addMessage("avatar", "Before I grant access, you need to verify your understanding. Use the mic to explain the technical requirement for this control.");
+          setCurrentState("VOICE_VERIFICATION");
         }, 800);
+      } else {
+        setCurrentState("RESOLUTION");
       }
-      
-      setCurrentState("RESOLUTION");
     }, 600);
   };
 
@@ -223,11 +274,37 @@ export default function Home() {
           </button>
         ));
 
+      case "VOICE_VERIFICATION":
+        return (
+          <div className="flex flex-col gap-2">
+            <button 
+              onClick={startRecording} 
+              disabled={isRecording || isCheckingCompetency}
+              className={`w-full ${isRecording ? 'bg-red-500 animate-pulse' : 'bg-blue-900'} hover:bg-blue-800 text-white text-center px-5 py-4 rounded-xl shadow-md transition-transform active:scale-[0.98] font-bold text-[1.05rem] flex items-center justify-center gap-2`}
+            >
+              {isRecording ? '🎤 Listening...' : isCheckingCompetency ? '⌛ Checking...' : '🎤 Explain Technical Requirement'}
+            </button>
+            {selectedScenario?.technical_specs && (
+              <div className="text-[0.75rem] text-gray-500 italic text-center px-2">
+                Tip: Mention specifics like {selectedScenario.technical_specs.match(/\d+\s?\w+/g)?.join(" or ")}
+              </div>
+            )}
+          </div>
+        );
+
       case "RESOLUTION":
         return (
-          <button onClick={handleReset} className="w-full bg-green-600 hover:bg-green-700 text-white text-center px-5 py-4 rounded-xl shadow-md transition-transform active:scale-[0.98] font-bold text-[1.05rem]">
-            ✅ Finish & Request Site Access
-          </button>
+          <div className="flex flex-col items-center gap-4">
+            <div className="w-full bg-green-100 border-2 border-green-500 rounded-2xl p-6 text-center shadow-inner">
+              <div className="text-4xl mb-2">🆔</div>
+              <div className="text-green-800 font-black text-xl tracking-tighter uppercase">Competency Verified</div>
+              <div className="text-green-700 text-xs font-bold">{selectedModule?.module_name.replace(/_/g, " ")}</div>
+              <div className="mt-4 bg-green-500 text-white py-1 px-4 rounded-full text-xs font-bold inline-block">SITE ACCESS GRANTED</div>
+            </div>
+            <button onClick={handleReset} className="w-full bg-neutral-900 hover:bg-black text-white text-center px-5 py-4 rounded-xl shadow-md transition-transform active:scale-[0.98] font-bold text-[1.05rem]">
+              ✅ Finalize & Exit
+            </button>
+          </div>
         );
       
       default: return null;
