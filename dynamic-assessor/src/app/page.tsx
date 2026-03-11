@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect } from "react";
 import { getModules } from "./actions";
 
-// Type definitions based on the provided JSON structure
 interface Scenario {
   id: string;
   symptom: string[];
@@ -260,62 +259,6 @@ export default function Home() {
           <div ref={chatEndRef} />
         </div>
 
-        <div className="p-4 bg-white border-t border-gray-200 flex flex-col gap-3 pb-8 max-h-[40vh] overflow-y-auto">
-          {renderChoices()}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-  return (
-    <div className="min-h-screen bg-neutral-900 flex items-center justify-center p-4 font-sans text-gray-900">
-      <div className="bg-white w-full max-w-md h-[85vh] rounded-[2rem] shadow-2xl flex flex-col overflow-hidden border-8 border-neutral-800 relative">
-        
-        {/* Header */}
-        <div className="bg-blue-900 text-white p-4 text-center font-bold text-lg flex items-center justify-between shadow-md z-10">
-          <div className="flex items-center gap-2">
-            <span>📘</span> Bluebook Assessor
-          </div>
-          <button 
-            onClick={toggleVoice}
-            className={`px-3 py-1 rounded-full text-sm font-semibold transition-colors ${voiceEnabled ? 'bg-green-500 text-white' : 'bg-gray-500 text-gray-200'}`}
-          >
-            {voiceEnabled ? '🔊 Voice On' : '🔇 Voice Off'}
-          </button>
-        </div>
-
-        {/* Visualizer Area (Optional) */}
-        {(imageUrl || isGeneratingImage) && (
-          <div className="w-full bg-black h-[180px] shrink-0 border-b border-gray-300 relative">
-            {isGeneratingImage ? (
-              <div className="flex h-full w-full items-center justify-center text-gray-400 font-medium">
-                Generating visual...
-              </div>
-            ) : (
-              <img src={imageUrl!} alt="Scenario visual" className="w-full h-full object-cover" />
-            )}
-          </div>
-        )}
-
-        {/* Chat Area */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 flex flex-col">
-          {messages.map((msg) => (
-            <div
-              key={msg.id}
-              className={`p-3 rounded-2xl max-w-[85%] ${
-                msg.role === "avatar"
-                  ? "bg-blue-100 text-blue-900 self-start rounded-tl-sm border-l-4 border-blue-600"
-                  : "bg-orange-500 text-white self-end rounded-tr-sm shadow-sm"
-              } shadow-sm transition-all animate-fade-in`}
-            >
-              {msg.text}
-            </div>
-          ))}
-          <div ref={chatEndRef} />
-        </div>
-
-        {/* Action Area */}
         <div className="p-4 bg-white border-t border-gray-200 flex flex-col gap-3 pb-8 max-h-[40vh] overflow-y-auto">
           {renderChoices()}
         </div>
