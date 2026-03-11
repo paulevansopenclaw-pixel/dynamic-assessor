@@ -94,10 +94,10 @@ export default function Home() {
   const categories = Array.from(new Set(modulesList.map(m => m.category)));
 
   const handleCategorySelect = (cat: string) => {
-    addMessage("user", cat);
+    addMessage("user", cat || "General Controls");
     setSelectedCategory(cat);
     setTimeout(() => {
-      addMessage("avatar", `Got it. ${cat}. Which specific control are you checking?`);
+      addMessage("avatar", `Got it. ${cat || "General Controls"}. Which specific control are you checking?`);
       setCurrentState("PICK_MODULE");
     }, 600);
   };
@@ -193,8 +193,12 @@ export default function Home() {
     switch (currentState) {
       case "PICK_CATEGORY":
         return categories.map((cat, idx) => (
-          <button key={idx} onClick={() => handleCategorySelect(cat)} className="w-full bg-blue-700 hover:bg-blue-800 text-white text-left px-5 py-4 rounded-xl shadow-md transition-transform active:scale-[0.98] font-medium text-[1.05rem]">
-            {cat}
+          <button 
+            key={idx} 
+            onClick={() => handleCategorySelect(cat)} 
+            className="w-full bg-blue-700 hover:bg-blue-800 text-white text-left px-5 py-4 rounded-xl shadow-md transition-transform active:scale-[0.98] font-medium text-[1.05rem]"
+          >
+            {cat || "General Controls"}
           </button>
         ));
 
