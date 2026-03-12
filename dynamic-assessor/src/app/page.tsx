@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { getModules } from "./actions";
 
+// Type definitions based on the provided JSON structure
 interface Scenario {
   id: string;
   symptom: string[];
@@ -22,31 +23,37 @@ interface ModuleData {
 
 interface Message {
   id: number;
-  role: "avatar" | "user" | "specs";
+  role: "avatar" | "user";
   text: string;
 }
 
-type AppState = "PICK_CATEGORY" | "PICK_MODULE" | "PICK_SYMPTOM" | "PICK_BRANCH" | "VOICE_VERIFICATION" | "RESOLUTION";
+type AppState = "PICK_SECTION" | "PICK_MODULE" | "PICK_SYMPTOM" | "PICK_BRANCH" | "RESOLUTION";
+
+const BLUE_BOOK_SECTIONS = [
+  "Planning",
+  "Erosion Control",
+  "Sediment Control",
+  "Maintenance",
+  "Compliance"
+];
 
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([
     { 
       id: 1, 
       role: "avatar", 
-      text: "Hey, I'm Wolf. I've got the Landcom Bluebook loaded up. Which category are we looking at today?" 
+      text: "Hey, I'm Wolf, your Dynamic Assessor. I've got the Landcom Blue Book training modules ready. Which section are we focusing on today?" 
     },
   ]);
   
-  const [currentState, setCurrentState] = useState<AppState>("PICK_CATEGORY");
+  const [currentState, setCurrentState] = useState<AppState>("PICK_SECTION");
   const [modulesList, setModulesList] = useState<ModuleData[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedSection, setSelectedSection] = useState<string | null>(null);
   const [selectedModule, setSelectedModule] = useState<ModuleData | null>(null);
   const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(null);
+  const [voiceEnabled, setVoiceEnabled] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
-  const [voiceEnabled, setVoiceEnabled] = useState(false);
-  const [isRecording, setIsRecording] = useState(false);
-  const [isCheckingCompetency, setIsCheckingCompetency] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -54,6 +61,7 @@ export default function Home() {
   }, [messages]);
 
   useEffect(() => {
+    // Load data from DB on mount
     getModules().then(res => {
       setModulesList(res as unknown as ModuleData[]);
     }).catch(err => {
@@ -88,35 +96,16 @@ export default function Home() {
     }
   };
 
-  const addMessage = (role: "avatar" | "user" | "specs", text: string) => {
+  const addMessage = (role: "avatar" | "user", text: string) => {
     setMessages((prev) => [...prev, { id: Date.now() + Math.random(), role, text }]);
     if (role === "avatar") speakText(text);
   };
 
-  const categories = Array.from(new Set(modulesList.map(m => m.category)));
-
-  const handleCategorySelect = (cat: string) => {
-    addMessage("user", cat || "General Controls");
-    setSelectedCategory(cat);
-    setTimeout(() => {
-      addMessage("avatar", `Got it. ${cat || "General Controls"}. Which specific control are you checking?`);
-      setCurrentState("PICK_MODULE");
-    }, 600);
-  };
-
-  const handleModuleSelect = (mod: ModuleData) => {
-    addMessage("user", mod.module_name.replace(/_/g, " "));
-    setSelectedModule(mod);
-    setTimeout(() => {
-      addMessage("avatar", `What exact issue or symptom are you seeing on site?`);
-      setCurrentState("PICK_SYMPTOM");
-    }, 600);
-  };
-
+  // --- Image Generator ---
   const generateVisual = async (scenario: Scenario) => {
     setIsGeneratingImage(true);
     try {
-      const prompt = `A highly realistic technical construction photo showing: ${scenario.symptom.join(", ")}`;
+      const prompt = `A photorealistic high-resolution construction site photo showing: ${scenario.symptom.join(", ")}. Standard Australian safety gear visible.`;
       const res = await fetch("/api/generate-image", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -133,6 +122,28 @@ export default function Home() {
     }
   };
 
+  // --- Handlers for each state ---
+
+  const handleSectionSelect = (section: string) => {
+    addMessage("user", section);
+    setSelectedSection(section);
+    
+    setTimeout(() => {
+      addMessage("avatar", `Opening ${section} modules. Which specific control or problem are we looking at?`);
+      setCurrentState("PICK_MODULE");
+    }, 600);
+  };
+
+  const handleModuleSelect = (mod: ModuleData) => {
+    addMessage("user", mod.module_name.replace(/_/g, " "));
+    setSelectedModule(mod);
+    
+    setTimeout(() => {
+      addMessage("avatar", `Got it. ${mod.module_name.replace(/_/g, " ")}. What are the symptoms or issues you've identified?`);
+      setCurrentState("PICK_SYMPTOM");
+    }, 600);
+  };
+
   const handleSymptomSelect = (scenario: Scenario) => {
     const userText = Array.isArray(scenario.symptom) ? scenario.symptom.join(" / ") : "This issue";
     addMessage("user", userText);
@@ -145,203 +156,182 @@ export default function Home() {
     }, 600);
   };
 
-  const startRecording = () => {
-    if (!('webkitSpeechRecognition' in window)) {
-      addMessage("avatar", "Voice recognition isn't supported in this browser. Try Chrome.");
-      return;
-    }
-
-    const recognition = new (window as any).webkitSpeechRecognition();
-    recognition.continuous = false;
-    recognition.interimResults = false;
-    recognition.lang = 'en-AU';
-
-    recognition.onstart = () => {
-      setIsRecording(true);
-      addMessage("avatar", "I'm listening. Explain the technical requirement for this fix...");
-    };
-
-    recognition.onresult = async (event: any) => {
-      const transcript = event.results[0][0].transcript;
-      addMessage("user", transcript);
-      setIsRecording(false);
-      
-      setIsCheckingCompetency(true);
-      try {
-        const res = await fetch("/api/competency", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ 
-            transcript, 
-            technicalSpecs: selectedScenario?.technical_specs 
-          }),
-        });
-        const data = await res.json();
-        addMessage("avatar", data.feedback);
-        if (data.verified) {
-          setCurrentState("RESOLUTION");
-        }
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setIsCheckingCompetency(false);
-      }
-    };
-
-    recognition.onerror = () => setIsRecording(false);
-    recognition.onend = () => setIsRecording(false);
-    recognition.start();
-  };
-
   const handleBranchSelect = (branchKey: string, branchAnswer: string) => {
     addMessage("user", branchKey.replace(/_/g, " "));
-    const isCritical = /(stop|violation|failed|immediately|fine|failed)/i.test(branchAnswer);
 
-    if (isCritical && selectedModule && selectedScenario) {
+    const isCritical = /(stop|violation|failed|immediately|fine)/i.test(branchAnswer);
+
+    if (isCritical) {
+      const moduleName = selectedModule?.module_name.replace(/_/g, " ") || "Unknown Module";
+      const issue = Array.isArray(selectedScenario?.symptom) 
+        ? selectedScenario?.symptom.join(", ") 
+        : "Unknown Issue";
+
       fetch("/api/slack", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          moduleName: selectedModule.module_name, 
-          issue: Array.isArray(selectedScenario.symptom) ? selectedScenario.symptom.join(", ") : selectedScenario.symptom, 
-          answer: branchAnswer 
-        }),
+        body: JSON.stringify({ moduleName, issue, answer: branchAnswer }),
       }).catch(console.error);
     }
     
     setTimeout(() => {
       const compliance = selectedModule ? ` (Ref: ${selectedModule.compliance_anchor})` : "";
-      addMessage("avatar", `${branchAnswer}${compliance}`);
+      const technicalNote = selectedScenario?.technical_specs ? `\n\nTechnical Spec: ${selectedScenario.technical_specs}` : "";
+      const passFailText = isCritical ? " This critical failure has been logged for supervisor review." : " Your competency on this standard is verified.";
       
-      if (selectedScenario?.technical_specs) {
-        setTimeout(() => {
-          addMessage("avatar", "Before I grant access, you need to verify your understanding. Use the mic to explain the technical requirement for this control.");
-          setCurrentState("VOICE_VERIFICATION");
-        }, 800);
-      } else {
-        setCurrentState("RESOLUTION");
-      }
+      addMessage("avatar", `${branchAnswer}${compliance}${technicalNote}.${passFailText}`);
+      setCurrentState("RESOLUTION");
     }, 600);
   };
 
   const handleReset = () => {
     addMessage("user", "Finish & Request Site Access");
     setImageUrl(null);
+    
     setTimeout(() => {
       setMessages([{ 
         id: Date.now(), 
         role: "avatar", 
-        text: "Access granted. Drive safe out there. What else do you need to look at?" 
+        text: "Training session complete. Access granted. Drive safe. Need help with another section?" 
       }]);
-      setCurrentState("PICK_CATEGORY");
-      setSelectedCategory(null);
+      setCurrentState("PICK_SECTION");
+      setSelectedSection(null);
       setSelectedModule(null);
       setSelectedScenario(null);
+      if (voiceEnabled) {
+        speakText("Training session complete. Access granted. Drive safe. Need help with another section?");
+      }
     }, 600);
   };
 
+  // --- Render logic for buttons based on state ---
   const renderChoices = () => {
     switch (currentState) {
-      case "PICK_CATEGORY":
-        return categories.map((cat, idx) => (
-          <button 
-            key={idx} 
-            onClick={() => handleCategorySelect(cat)} 
+      case "PICK_SECTION":
+        return BLUE_BOOK_SECTIONS.map((section, idx) => (
+          <button
+            key={idx}
+            onClick={() => handleSectionSelect(section)}
             className="w-full bg-blue-700 hover:bg-blue-800 text-white text-left px-5 py-4 rounded-xl shadow-md transition-transform active:scale-[0.98] font-medium text-[1.05rem]"
           >
-            {cat || "General Controls"}
+            {section}
           </button>
         ));
 
       case "PICK_MODULE":
-        return modulesList.filter(m => m.category === selectedCategory).map((mod, idx) => (
-          <button key={idx} onClick={() => handleModuleSelect(mod)} className="w-full bg-blue-700 hover:bg-blue-800 text-white text-left px-5 py-4 rounded-xl shadow-md transition-transform active:scale-[0.98] font-medium text-[1.05rem]">
-            {mod.module_name.replace(/_/g, " ")}
-          </button>
-        ));
+        return modulesList
+          .filter(m => !selectedSection || m.category === selectedSection)
+          .map((mod, idx) => (
+            <button
+              key={idx}
+              onClick={() => handleModuleSelect(mod)}
+              className="w-full bg-blue-700 hover:bg-blue-800 text-white text-left px-5 py-4 rounded-xl shadow-md transition-transform active:scale-[0.98] font-medium text-[1.05rem]"
+            >
+              {mod.module_name.replace(/_/g, " ")}
+            </button>
+          ));
 
       case "PICK_SYMPTOM":
-        return selectedModule?.scenarios.map((scenario, idx) => (
-          <button key={idx} onClick={() => handleSymptomSelect(scenario)} className="w-full bg-blue-700 hover:bg-blue-800 text-white text-left px-5 py-4 rounded-xl shadow-md transition-transform active:scale-[0.98] font-medium text-[1.05rem]">
+        if (!selectedModule) return null;
+        return selectedModule.scenarios.map((scenario, idx) => (
+          <button
+            key={idx}
+            onClick={() => handleSymptomSelect(scenario)}
+            className="w-full bg-blue-700 hover:bg-blue-800 text-white text-left px-5 py-4 rounded-xl shadow-md transition-transform active:scale-[0.98] font-medium text-[1.05rem]"
+          >
             {Array.isArray(scenario.symptom) ? scenario.symptom.join(" / ") : scenario.symptom}
           </button>
         ));
 
       case "PICK_BRANCH":
-        return Object.entries(selectedScenario?.branches || {}).map(([key, answer], idx) => (
-          <button key={idx} onClick={() => handleBranchSelect(key, answer as string)} className="w-full bg-blue-700 hover:bg-blue-800 text-white text-left px-5 py-4 rounded-xl shadow-md transition-transform active:scale-[0.98] font-medium text-[1.05rem] capitalize">
+        if (!selectedScenario || !selectedScenario.branches) return null;
+        return Object.entries(selectedScenario.branches).map(([key, answer], idx) => (
+          <button
+            key={idx}
+            onClick={() => handleBranchSelect(key, answer)}
+            className="w-full bg-blue-700 hover:bg-blue-800 text-white text-left px-5 py-4 rounded-xl shadow-md transition-transform active:scale-[0.98] font-medium text-[1.05rem] capitalize"
+          >
             {key.replace(/_/g, " ")}
           </button>
         ));
 
-      case "VOICE_VERIFICATION":
-        return (
-          <div className="flex flex-col gap-2">
-            <button 
-              onClick={startRecording} 
-              disabled={isRecording || isCheckingCompetency}
-              className={`w-full ${isRecording ? 'bg-red-500 animate-pulse' : 'bg-blue-900'} hover:bg-blue-800 text-white text-center px-5 py-4 rounded-xl shadow-md transition-transform active:scale-[0.98] font-bold text-[1.05rem] flex items-center justify-center gap-2`}
-            >
-              {isRecording ? '🎤 Listening...' : isCheckingCompetency ? '⌛ Checking...' : '🎤 Explain Technical Requirement'}
-            </button>
-            {selectedScenario?.technical_specs && (
-              <div className="text-[0.75rem] text-gray-500 italic text-center px-2">
-                Tip: Mention specifics like {selectedScenario.technical_specs.match(/\d+\s?\w+/g)?.join(" or ")}
-              </div>
-            )}
-          </div>
-        );
-
       case "RESOLUTION":
         return (
-          <div className="flex flex-col items-center gap-4">
-            <div className="w-full bg-green-100 border-2 border-green-500 rounded-2xl p-6 text-center shadow-inner">
-              <div className="text-4xl mb-2">🆔</div>
-              <div className="text-green-800 font-black text-xl tracking-tighter uppercase">Competency Verified</div>
-              <div className="text-green-700 text-xs font-bold">{selectedModule?.module_name.replace(/_/g, " ")}</div>
-              <div className="mt-4 bg-green-500 text-white py-1 px-4 rounded-full text-xs font-bold inline-block">SITE ACCESS GRANTED</div>
-            </div>
-            <button onClick={handleReset} className="w-full bg-neutral-900 hover:bg-black text-white text-center px-5 py-4 rounded-xl shadow-md transition-transform active:scale-[0.98] font-bold text-[1.05rem]">
-              ✅ Finalize & Exit
-            </button>
-          </div>
+          <button
+            onClick={handleReset}
+            className="w-full bg-green-600 hover:bg-green-700 text-white text-center px-5 py-4 rounded-xl shadow-md transition-transform active:scale-[0.98] font-bold text-[1.05rem]"
+          >
+            ✅ Finish & Request Site Access
+          </button>
         );
       
-      default: return null;
+      default:
+        return null;
     }
   };
 
   return (
     <div className="min-h-screen bg-neutral-900 flex items-center justify-center p-4 font-sans text-gray-900">
       <div className="bg-white w-full max-w-md h-[85vh] rounded-[2rem] shadow-2xl flex flex-col overflow-hidden border-8 border-neutral-800 relative">
+        
+        {/* Header */}
         <div className="bg-blue-900 text-white p-4 text-center font-bold text-lg flex items-center justify-between shadow-md z-10">
-          <div className="flex items-center gap-2"><span>🐺</span> Wolf Assessor</div>
-          <button onClick={toggleVoice} className={`px-3 py-1 rounded-full text-sm font-semibold transition-colors ${voiceEnabled ? 'bg-green-500 text-white' : 'bg-gray-500 text-gray-200'}`}>
+          <div className="flex items-center gap-2 text-sm">
+            <span>📘</span> Blue Book Training
+          </div>
+          <button 
+            onClick={toggleVoice}
+            className={`px-3 py-1 rounded-full text-xs font-semibold transition-colors ${voiceEnabled ? 'bg-green-500 text-white' : 'bg-gray-500 text-gray-200'}`}
+          >
             {voiceEnabled ? '🔊 Voice On' : '🔇 Voice Off'}
           </button>
         </div>
 
+        {/* Visualizer Area */}
         {(imageUrl || isGeneratingImage) && (
           <div className="w-full bg-black h-[180px] shrink-0 border-b border-gray-300 relative">
-            {isGeneratingImage ? <div className="flex h-full w-full items-center justify-center text-gray-400 font-medium">Analyzing site...</div> : <img src={imageUrl!} alt="Scenario visual" className="w-full h-full object-cover" />}
+            {isGeneratingImage ? (
+              <div className="flex h-full w-full items-center justify-center text-gray-400 font-medium animate-pulse">
+                Generating site visual...
+              </div>
+            ) : (
+              <img src={imageUrl!} alt="Scenario visual" className="w-full h-full object-cover" />
+            )}
           </div>
         )}
 
+        {/* Chat Area */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 flex flex-col">
           {messages.map((msg) => (
-            <div key={msg.id} className={`p-3 rounded-2xl max-w-[85%] ${
-              msg.role === "avatar" ? "bg-blue-100 text-blue-900 self-start rounded-tl-sm border-l-4 border-blue-600" :
-              msg.role === "specs" ? "bg-amber-100 text-amber-900 self-start text-sm italic border-l-4 border-amber-500" :
-              "bg-orange-500 text-white self-end rounded-tr-sm shadow-sm"
-            } shadow-sm animate-fade-in`}>
+            <div
+              key={msg.id}
+              className={`p-3 rounded-2xl max-w-[85%] whitespace-pre-wrap ${
+                msg.role === "avatar"
+                  ? "bg-blue-100 text-blue-900 self-start rounded-tl-sm border-l-4 border-blue-600 shadow-sm"
+                  : "bg-orange-500 text-white self-end rounded-tr-sm shadow-sm"
+              } transition-all animate-fade-in`}
+            >
               {msg.text}
             </div>
           ))}
           <div ref={chatEndRef} />
         </div>
 
+        {/* Action Area */}
         <div className="p-4 bg-white border-t border-gray-200 flex flex-col gap-3 pb-8 max-h-[40vh] overflow-y-auto">
           {renderChoices()}
+          {currentState !== "PICK_SECTION" && (
+             <button 
+                onClick={() => {
+                   setMessages([{id: Date.now(), role: 'avatar', text: 'Resetting. Pick a new section:'}]);
+                   setCurrentState('PICK_SECTION');
+                   setImageUrl(null);
+                }}
+                className="text-center text-xs text-gray-400 hover:text-gray-600 mt-2"
+             >
+                ← Back to Sections
+             </button>
+          )}
         </div>
       </div>
     </div>
