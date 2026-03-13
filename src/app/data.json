@@ -1,6 +1,6 @@
 {
   "project": "Dynamic Assessor",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "modules": [
     {
       "module_name": "Sediment_Fence_Troubleshooting",
@@ -54,6 +54,27 @@
             "inactive_no_fence": "Violation. Stockpiles inactive for > 10 days must be covered or seeded, and must have a sediment fence on the downslope side.",
             "active_no_fence": "Even if active, you must install a sediment fence 2 meters from the downslope base to catch runoff.",
             "inactive_with_fence": "Fence is good, but if it's inactive for > 10 days, you still need to apply a polymer dust binder or hydromulch."
+          }
+        }
+      ]
+    },
+    {
+      "module_name": "Sediment_Basin_Maintenance",
+      "category": "Maintenance",
+      "compliance_anchor": "Landcom Blue Book Vol 1, 4th Edition - Section 6.3.3",
+      "scenarios": [
+        {
+          "id": "bm_001",
+          "symptom": [
+            "sediment level high",
+            "marker peg submerged",
+            "basin capacity low"
+          ],
+          "diagnostic_question": "Is the sediment level at or above the 'clean out' mark on the sediment marker peg?",
+          "technical_specs": "Basins must be cleaned when sediment exceeds 50% of the sediment storage zone capacity.",
+          "branches": {
+            "above_mark": "Immediate maintenance required. Desilt the basin and dispose of sediment in a stable location where it cannot wash back into the system.",
+            "below_mark": "Compliance maintained. However, check the flocculant station to ensure it is ready for the next event."
           }
         }
       ]
