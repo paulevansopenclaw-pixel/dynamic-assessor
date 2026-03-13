@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { getModules } from "./actions";
 import TechnicalDiagram from "./components/TechnicalDiagram";
 import VideoSandbox from "./components/VideoSandbox";
+import SedimentBasinMarker from "./components/SedimentBasinMarker";
 
 interface Scenario {
   id: string;
@@ -382,6 +383,9 @@ export default function Home() {
           )}
           {selectedScenario?.symptom.some(s => s.toLowerCase().includes('inlet') || s.toLowerCase().includes('kerb')) && currentState !== 'PICK_CATEGORY' && (
             <TechnicalDiagram type="inlet-protection" />
+          )}
+          {selectedScenario?.symptom.some(s => s.toLowerCase().includes('basin') || s.toLowerCase().includes('silt')) && currentState !== 'PICK_CATEGORY' && (
+            <SedimentBasinMarker fillLevel={65} />
           )}
           {messages.map((msg) => (
             <div key={msg.id} className={`flex flex-col ${msg.role === "user" ? "items-end" : "items-start"} animate-fade-in`}>
