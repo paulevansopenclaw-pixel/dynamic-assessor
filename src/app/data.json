@@ -80,6 +80,28 @@
       ]
     },
     {
+      "module_name": "Inlet_Protection",
+      "category": "Sediment Control",
+      "compliance_anchor": "Landcom Blue Book Vol 1, 4th Edition - Section 6.3.3.4",
+      "scenarios": [
+        {
+          "id": "ip_001",
+          "symptom": [
+            "sediment entering gully",
+            "inlet choked with silt",
+            "curb inlet bypassing"
+          ],
+          "diagnostic_question": "What type of inlet protection is installed: SAG bags, sediment fence, or a filter sock?",
+          "technical_specs": "SAG bags must have 75mm gap for overflow. Socks must be secured with 1.5kg/m weight.",
+          "branches": {
+            "sag_bags_choked": "If the bags are choked, you must replace the aggregate. Ensure a 75mm gap is maintained for emergency bypass overflow.",
+            "sock_bypassing": "The filter sock has failed to seal. Re-seat the sock and ensure it is properly weighted to prevent under-flow.",
+            "no_protection": "Immediate violation. Install temporary inlet protection (SAG bags or socks) before the next rain event."
+          }
+        }
+      ]
+    },
+    {
       "module_name": "Progressive_Rehabilitation",
       "category": "Planning",
       "compliance_anchor": "Landcom Blue Book Vol 1, 4th Edition - Section 4.3",

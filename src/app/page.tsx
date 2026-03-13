@@ -277,16 +277,27 @@ export default function Home() {
       case "VOICE_VERIFICATION":
         return (
           <div className="flex flex-col gap-3">
+            <div className="flex justify-center mb-2">
+              <div className={`relative w-20 h-20 flex items-center justify-center rounded-full border-2 ${isRecording ? 'border-red-500 shadow-[0_0_15px_rgba(239,68,68,0.5)]' : 'border-blue-500/30'}`}>
+                {isRecording && (
+                  <>
+                    <div className="absolute inset-0 rounded-full border-2 border-red-500 animate-ping opacity-20"></div>
+                    <div className="absolute inset-[-4px] rounded-full border border-red-500/40 animate-pulse"></div>
+                  </>
+                )}
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={isRecording ? "text-red-500" : "text-blue-500/40"}><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
+              </div>
+            </div>
             <button 
               onClick={startRecording} 
               disabled={isRecording || isCheckingCompetency}
               className={`w-full ${isRecording ? 'bg-red-500/80 animate-pulse border-red-400' : 'bg-blue-600/20 border-blue-500/50'} hover:bg-blue-600/30 text-white text-center px-5 py-5 rounded-2xl shadow-xl transition-all active:scale-[0.98] font-bold text-[1.1rem] flex items-center justify-center gap-3 border`}
             >
-              {isRecording ? '🎤 Listening...' : isCheckingCompetency ? '⌛ Checking...' : '🎤 Verify Competency'}
+              {isRecording ? 'Listening...' : isCheckingCompetency ? '⌛ Checking Specs...' : '🎤 Start Verification'}
             </button>
             {selectedScenario?.technical_specs && (
               <div className="text-[0.8rem] text-white/40 italic text-center px-2">
-                Mention specifics: {selectedScenario.technical_specs.match(/\d+\s?\w+/g)?.join(", ")}
+                Mention: {selectedScenario.technical_specs.match(/\d+\s?\w+/g)?.join(", ")}
               </div>
             )}
           </div>
