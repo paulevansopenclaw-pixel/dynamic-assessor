@@ -18,12 +18,11 @@ We are building the Dynamic Assessor app. It replaces the Landcom Bluebook with 
 - **Current Stack**: Next.js, Prisma (SQLite), Tailwind, ElevenLabs, Google Imagen 4.
 - **Replit Agent Assessment**: Moving to Replit Agent is **not recommended** for the GTM core build. While Replit is excellent for rapid prototyping (0 to 1), our current local + Vercel stack provides superior "Lab Mode" control over the specialized AI orchestration (OpenClaw) and technical SVG rendering required for Georgina's utility. 2026 GTM acceleration is found in stable local iteration, not autonomous agent hand-offs.
 - **New URL**: https://workspace-three-self.vercel.app (Note: User prefers "Lab Mode" local development for now).
-- **Recent Progress**: Built high-fidelity interactive SVG diagrams for Sediment Fences, Check Dams (SD 5-4), and Gully Pit Inlet Protection (SD 6-11). Added "Good vs Bad" Video Sandbox.
+- **Recent Progress**: Built high-fidelity interactive SVG diagrams for Sediment Fences, Check Dams (SD 5-4), and Gully Pit Inlet Protection (SD 6-11). Added "Good vs Bad" Video Sandbox. Integrated full Blue Book Section 4 (Erosion Control: Management of Soils) into the module database and UI. Fixed multi-module UI logic to surface all available options in a category.
 - **Pending**: Gmail OAuth for direct briefings.
 
-## 2026-03-13 - Local-First Sprint & Maintenance Expansion
-- **Strategy Shift**: Moved to 100% local development mode to bypass deployment lag and accelerate the iteration of tactical UI elements.
-- **Demo Prep**: Pushed the "2026 Tactical UI" and "Voice Scanner" updates to GitHub (`666b293`) to ensure the live Vercel demo for Georgina's boss is current.
-- **Technical Content**: Deepened the 'Maintenance' module with specific 'Sediment Basin' logic—implementing the 50% capacity clean-out trigger and marker peg compliance checks.
-- **AI Roadmap**: Validated our multi-agent orchestration approach against 2026 GTM trends; prepared to transition from transcript-checking to 'technical truth' validation using high-fidelity reasoning models.
+## 2026-03-14 - Section 4 Integration & Multi-Module UI Fix
+- **Blue Book Deep Dive**: Integrated complete Section 4 coverage into the Dynamic Assessor. This includes 4.1 (Principles), 4.2 (Planning), 4.3 (Handling Soils/Topsoil), and 4.4 (Erosion Hazard Assessment/Management).
+- **Data Architecture**: Synchronized both `data.json` and the Prisma SQLite database (`dev.db`) to ensure Section 4 content is available across all environments.
+- **UX Improvement**: Refined the conversational flow. When a user selects a category like "Erosion Control," Wolf now acknowledges multiple options (Section 4 Soil Management vs. Stockpile Management) instead of defaulting to a single choice.
 

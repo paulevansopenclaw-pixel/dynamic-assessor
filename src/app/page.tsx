@@ -98,7 +98,7 @@ export default function Home() {
     if (role === "avatar") speakText(text);
   };
 
-  const categories = Array.from(new Set(modulesList.map(m => m.category)));
+  const categories = Array.from(new Set(modulesList.map(m => m.category))).sort();
 
   const handleVisionUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -132,8 +132,16 @@ export default function Home() {
   const handleCategorySelect = (cat: string) => {
     addMessage("user", cat || "General Controls");
     setSelectedCategory(cat);
+    
+    // Check if there are multiple modules for this category
+    const filteredModules = modulesList.filter(m => m.category === cat);
+    
     setTimeout(() => {
-      addMessage("avatar", `Got it. ${cat || "General Controls"}. Which specific control are you checking?`);
+      if (filteredModules.length > 1) {
+        addMessage("avatar", `Got it. I've found ${filteredModules.length} modules for ${cat}. Which one would you like to review?`);
+      } else {
+        addMessage("avatar", `Got it. ${cat || "General Controls"}. Which specific control are you checking?`);
+      }
       setCurrentState("PICK_MODULE");
     }, 600);
   };
@@ -310,7 +318,10 @@ export default function Home() {
         );
 
       case "PICK_MODULE":
-        return modulesList.filter(m => m.category === selectedCategory).map((mod, idx) => (
+        return modulesList
+          .filter(m => m.category === selectedCategory)
+          .sort((a, b) => a.module_name.localeCompare(b.module_name))
+          .map((mod, idx) => (
           <button key={idx} onClick={() => handleModuleSelect(mod)} className="w-full glass-card hover:bg-white/10 text-white text-left px-5 py-4 rounded-2xl shadow-lg transition-all active:scale-[0.98] font-medium text-[1.05rem] border border-white/10">
             {mod.module_name.replace(/_/g, " ")}
           </button>
