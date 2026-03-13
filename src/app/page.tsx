@@ -2,6 +2,8 @@
 
 import { useState, useRef, useEffect } from "react";
 import { getModules } from "./actions";
+import TechnicalDiagram from "./components/TechnicalDiagram";
+import VideoSandbox from "./components/VideoSandbox";
 
 interface Scenario {
   id: string;
@@ -369,6 +371,12 @@ export default function Home() {
 
         {/* Chat Log */}
         <div className="flex-1 overflow-y-auto p-5 space-y-5 no-scrollbar flex flex-col pt-8">
+          {selectedScenario?.symptom.some(s => s.toLowerCase().includes('fence')) && currentState !== 'PICK_CATEGORY' && (
+            <>
+              <TechnicalDiagram type="sediment-fence" />
+              <VideoSandbox />
+            </>
+          )}
           {messages.map((msg) => (
             <div key={msg.id} className={`flex flex-col ${msg.role === "user" ? "items-end" : "items-start"} animate-fade-in`}>
               <div className={`px-4 py-3 rounded-[1.5rem] max-w-[88%] text-[0.95rem] leading-relaxed ${
