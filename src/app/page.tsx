@@ -377,6 +377,12 @@ export default function Home() {
               <VideoSandbox />
             </>
           )}
+          {selectedScenario?.symptom.some(s => s.toLowerCase().includes('dam')) && currentState !== 'PICK_CATEGORY' && (
+            <TechnicalDiagram type="check-dam" />
+          )}
+          {selectedScenario?.symptom.some(s => s.toLowerCase().includes('inlet') || s.toLowerCase().includes('kerb')) && currentState !== 'PICK_CATEGORY' && (
+            <TechnicalDiagram type="inlet-protection" />
+          )}
           {messages.map((msg) => (
             <div key={msg.id} className={`flex flex-col ${msg.role === "user" ? "items-end" : "items-start"} animate-fade-in`}>
               <div className={`px-4 py-3 rounded-[1.5rem] max-w-[88%] text-[0.95rem] leading-relaxed ${
