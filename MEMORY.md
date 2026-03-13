@@ -16,12 +16,14 @@ We are building the Dynamic Assessor app. It replaces the Landcom Bluebook with 
 
 ## Key Identifiers & Status
 - **Current Stack**: Next.js, Prisma (SQLite), Tailwind, ElevenLabs, Google Imagen 4.
+- **Replit Agent Assessment**: Moving to Replit Agent is **not recommended** for the GTM core build. While Replit is excellent for rapid prototyping (0 to 1), our current local + Vercel stack provides superior "Lab Mode" control over the specialized AI orchestration (OpenClaw) and technical SVG rendering required for Georgina's utility. 2026 GTM acceleration is found in stable local iteration, not autonomous agent hand-offs.
 - **New URL**: https://workspace-three-self.vercel.app (Note: User prefers "Lab Mode" local development for now).
-- **Recent Progress**: Built interactive SVG diagrams for Sediment Fences, Check Dams, and Inlet Protection. Added "Good vs Bad" Video Sandbox.
-- **Pending**: Gmail OAuth for direct briefings; Replit Agent capability assessment.
+- **Recent Progress**: Built high-fidelity interactive SVG diagrams for Sediment Fences, Check Dams (SD 5-4), and Gully Pit Inlet Protection (SD 6-11). Added "Good vs Bad" Video Sandbox.
+- **Pending**: Gmail OAuth for direct briefings.
 
-## 2026-03-13 - Replit Agent Assessment & Technical Diagrams
-- **GTM Strategy Assessment**: Evaluated Replit Agent vs. Current Local+Vercel stack. Replit Agent offers superior 0-to-1 speed and reduced infra-friction, but our current stack is better for the specialized Voice Competency hardware integration and existing Vercel pipeline. Recommended staying on Vercel for the core product but using Replit for rapid feature prototyping.
-- **Technical Diagrams**: Built out Mermaid-based technical diagrams for 'Check Dams' and 'Inlet Protection' in `DIAGRAMS.md`. These align with Landcom Blue Book requirements for Georgina's project.
-- **Project Expansion**: Added 'Check Dams' logic to the knowledge base, specifically focusing on height (500mm max) and spacing formulas based on slope.
+## 2026-03-13 - Local-First Sprint & Maintenance Expansion
+- **Strategy Shift**: Moved to 100% local development mode to bypass deployment lag and accelerate the iteration of tactical UI elements.
+- **Demo Prep**: Pushed the "2026 Tactical UI" and "Voice Scanner" updates to GitHub (`666b293`) to ensure the live Vercel demo for Georgina's boss is current.
+- **Technical Content**: Deepened the 'Maintenance' module with specific 'Sediment Basin' logic—implementing the 50% capacity clean-out trigger and marker peg compliance checks.
+- **AI Roadmap**: Validated our multi-agent orchestration approach against 2026 GTM trends; prepared to transition from transcript-checking to 'technical truth' validation using high-fidelity reasoning models.
 

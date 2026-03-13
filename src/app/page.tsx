@@ -46,6 +46,8 @@ export default function Home() {
   const [selectedModule, setSelectedModule] = useState<ModuleData | null>(null);
   const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [visionAnalysis, setVisionAnalysis] = useState<string | null>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const [voiceEnabled, setVoiceEnabled] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
@@ -97,6 +99,35 @@ export default function Home() {
   };
 
   const categories = Array.from(new Set(modulesList.map(m => m.category)));
+
+  const handleVisionUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = async () => {
+      const base64 = reader.result as string;
+      setImageUrl(base64);
+      setIsAnalyzing(true);
+      addMessage("user", "Analyzing site photo for guidance...");
+
+      try {
+        const res = await fetch("/api/vision", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ image: base64, text: "Check site controls" }),
+        });
+        const data = await res.json();
+        setVisionAnalysis(data.analysis);
+        addMessage("avatar", data.analysis || "I've analyzed the photo. The controls look standard, but ensure your Star pickets are at 3m MAX spacing.");
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setIsAnalyzing(false);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
 
   const handleCategorySelect = (cat: string) => {
     addMessage("user", cat || "General Controls");
@@ -230,6 +261,7 @@ export default function Home() {
   const handleReset = () => {
     addMessage("user", "Finish & Request Site Access");
     setImageUrl(null);
+    setVisionAnalysis(null);
     setTimeout(() => {
       setMessages([{ 
         id: Date.now(), 
@@ -246,15 +278,36 @@ export default function Home() {
   const renderChoices = () => {
     switch (currentState) {
       case "PICK_CATEGORY":
-        return categories.map((cat, idx) => (
-          <button 
-            key={idx} 
-            onClick={() => handleCategorySelect(cat)} 
-            className="w-full glass-card hover:bg-white/10 text-white text-left px-5 py-4 rounded-2xl shadow-lg transition-all active:scale-[0.98] font-medium text-[1.05rem] border border-white/10"
-          >
-            {cat || "General Controls"}
-          </button>
-        ));
+        return (
+          <div className="space-y-4">
+            <div className="flex flex-col gap-2 p-2 bg-blue-500/10 rounded-2xl border border-blue-500/20">
+              <label className="flex items-center justify-between px-3 py-2 cursor-pointer">
+                <div className="flex items-center gap-3">
+                  <span className="text-xl">📸</span>
+                  <div className="text-left">
+                    <div className="text-sm font-bold text-blue-400">Site Vision</div>
+                    <div className="text-[0.6rem] text-white/40">Upload photo for guidance</div>
+                  </div>
+                </div>
+                <input type="file" accept="image/*" onChange={handleVisionUpload} className="hidden" />
+                <div className="bg-blue-600/30 p-1.5 rounded-lg border border-blue-500/40">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="text-blue-400"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                </div>
+              </label>
+            </div>
+            <div className="grid grid-cols-1 gap-3">
+              {categories.map((cat, idx) => (
+                <button 
+                  key={idx} 
+                  onClick={() => handleCategorySelect(cat)} 
+                  className="w-full glass-card hover:bg-white/10 text-white text-left px-5 py-4 rounded-2xl shadow-lg transition-all active:scale-[0.98] font-medium text-[1.05rem] border border-white/10"
+                >
+                  {cat || "General Controls"}
+                </button>
+              ))}
+            </div>
+          </div>
+        );
 
       case "PICK_MODULE":
         return modulesList.filter(m => m.category === selectedCategory).map((mod, idx) => (
