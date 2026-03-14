@@ -52,6 +52,7 @@ export default function Home() {
   const [voiceEnabled, setVoiceEnabled] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [isCheckingCompetency, setIsCheckingCompetency] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -132,6 +133,7 @@ export default function Home() {
   const handleCategorySelect = (cat: string) => {
     addMessage("user", cat || "General Controls");
     setSelectedCategory(cat);
+    setSearchQuery("");
     
     // Check if there are multiple modules for this category
     const filteredModules = modulesList.filter(m => m.category === cat);
@@ -144,6 +146,27 @@ export default function Home() {
       }
       setCurrentState("PICK_MODULE");
     }, 600);
+  };
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    if (query.trim() === "") return;
+
+    // Find modules where name, category, or any scenario symptoms match the query
+    const results = modulesList.filter(m => 
+      m.module_name.toLowerCase().includes(query.toLowerCase()) ||
+      m.category.toLowerCase().includes(query.toLowerCase()) ||
+      m.scenarios.some(s => s.symptom.some(sym => sym.toLowerCase().includes(query.toLowerCase())))
+    );
+
+    if (results.length > 0) {
+      addMessage("user", `Searching for: ${query}`);
+      setTimeout(() => {
+        addMessage("avatar", `I found ${results.length} relevant Blue Book modules. Which one matches your site condition?`);
+        setCurrentState("PICK_MODULE");
+        setSelectedCategory("SEARCH_RESULTS");
+      }, 400);
+    }
   };
 
   const handleModuleSelect = (mod: ModuleData) => {
@@ -288,21 +311,31 @@ export default function Home() {
       case "PICK_CATEGORY":
         return (
           <div className="space-y-4">
-            <div className="flex flex-col gap-2 p-2 bg-blue-500/10 rounded-2xl border border-blue-500/20">
-              <label className="flex items-center justify-between px-3 py-2 cursor-pointer">
-                <div className="flex items-center gap-3">
+            <div className="flex gap-2">
+              <div className="flex-1 relative">
+                <input 
+                  type="text" 
+                  placeholder="Search problem or control..." 
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSearch(searchQuery)}
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-orange-500/50 transition-all"
+                />
+                <button 
+                  onClick={() => handleSearch(searchQuery)}
+                  className="absolute right-2 top-1.5 p-1.5 bg-orange-600 rounded-xl shadow-lg active:scale-95 transition-all"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                </button>
+              </div>
+              <div className="bg-blue-500/10 rounded-2xl border border-blue-500/20 shrink-0">
+                <label className="flex items-center justify-center p-3 cursor-pointer">
                   <span className="text-xl">📸</span>
-                  <div className="text-left">
-                    <div className="text-sm font-bold text-blue-400">Site Vision</div>
-                    <div className="text-[0.6rem] text-white/40">Upload photo for guidance</div>
-                  </div>
-                </div>
-                <input type="file" accept="image/*" onChange={handleVisionUpload} className="hidden" />
-                <div className="bg-blue-600/30 p-1.5 rounded-lg border border-blue-500/40">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="text-blue-400"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
-                </div>
-              </label>
+                  <input type="file" accept="image/*" onChange={handleVisionUpload} className="hidden" />
+                </label>
+              </div>
             </div>
+            
             <div className="grid grid-cols-1 gap-3">
               {categories.map((cat, idx) => (
                 <button 
@@ -318,8 +351,15 @@ export default function Home() {
         );
 
       case "PICK_MODULE":
-        return modulesList
-          .filter(m => m.category === selectedCategory)
+        const currentModules = selectedCategory === "SEARCH_RESULTS" 
+          ? modulesList.filter(m => 
+              m.module_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              m.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              m.scenarios.some(s => s.symptom.some(sym => sym.toLowerCase().includes(searchQuery.toLowerCase())))
+            )
+          : modulesList.filter(m => m.category === selectedCategory);
+
+        return currentModules
           .sort((a, b) => a.module_name.localeCompare(b.module_name))
           .map((mod, idx) => (
           <button key={idx} onClick={() => handleModuleSelect(mod)} className="w-full glass-card hover:bg-white/10 text-white text-left px-5 py-4 rounded-2xl shadow-lg transition-all active:scale-[0.98] font-medium text-[1.05rem] border border-white/10">
