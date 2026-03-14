@@ -2,15 +2,19 @@
 
 _Learn about the person you're helping. Update this as you go._
 
-- **Name:**
-- **What to call them:**
+- **Name:** Paul
+- **What to call them:** Paul
 - **Pronouns:** _(optional)_
-- **Timezone:**
-- **Notes:**
+- **Timezone:** Australia/Sydney
+- **Primary Email:** paulevans1975@gmail.com
+- **Project Email (Wolf):** paulevansopenclaw@gmail.com
+- **Project Contact (Wife):** Georgina
+- **Georgina's Email:** georginaevans24@gmail.com
 
 ## Context
-
-_(What do they care about? What projects are they working on? What annoys them? What makes them laugh? Build this over time.)_
+- **Project:** Building the "Dynamic Assessor" (Blue Book Digital Twin).
+- **Motivation:** Bridging the gap between high-level AI and job-site reality for Georgina to save her time.
+- **Goal:** Automating Friday briefings to Georgina and environmental experts.
 
 ---
 

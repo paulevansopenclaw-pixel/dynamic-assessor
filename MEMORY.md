@@ -16,13 +16,12 @@ We are building the Dynamic Assessor app. It replaces the Landcom Bluebook with 
 
 ## Key Identifiers & Status
 - **Current Stack**: Next.js, Prisma (SQLite), Tailwind, ElevenLabs, Google Imagen 4.
-- **Replit Agent Assessment**: Moving to Replit Agent is **not recommended** for the GTM core build. While Replit is excellent for rapid prototyping (0 to 1), our current local + Vercel stack provides superior "Lab Mode" control over the specialized AI orchestration (OpenClaw) and technical SVG rendering required for Georgina's utility. 2026 GTM acceleration is found in stable local iteration, not autonomous agent hand-offs.
-- **New URL**: https://workspace-three-self.vercel.app (Note: User prefers "Lab Mode" local development for now).
-- **Recent Progress**: Built high-fidelity interactive SVG diagrams for Sediment Fences, Check Dams (SD 5-4), and Gully Pit Inlet Protection (SD 6-11). Added "Good vs Bad" Video Sandbox. Integrated full Blue Book Section 4 (Erosion Control: Management of Soils) into the module database and UI. Fixed multi-module UI logic to surface all available options in a category.
-- **Pending**: Gmail OAuth for direct briefings.
+- **Replit Agent Assessment**: Moving to Replit Agent is **not recommended** for the GTM core build. While excellent for prototyping, it lacks the fine-grained control needed for our local AI orchestration (OpenClaw), custom SVG rendering, and specialized technical integrations. Our Local + Vercel stack is currently 2-3x faster for iterating on Georgina's complex requirements.
+- **Recent Progress**: Built high-fidelity interactive SVG diagrams for Sediment Fences, Check Dams (SD 5-4), and Gully Pit Inlet Protection (SD 6-11). **Briefing Engine Live**: Connected to Gmail with Georgina (`georginaevans24@gmail.com`) and Paul (`paulevans1975@gmail.com`) as primary recipients.
+- **Pending**: Automated reporting scheduler (Friday 4 PM) for Georgina.
 
-## 2026-03-14 - Section 4 Integration & Multi-Module UI Fix
-- **Blue Book Deep Dive**: Integrated complete Section 4 coverage into the Dynamic Assessor. This includes 4.1 (Principles), 4.2 (Planning), 4.3 (Handling Soils/Topsoil), and 4.4 (Erosion Hazard Assessment/Management).
-- **Data Architecture**: Synchronized both `data.json` and the Prisma SQLite database (`dev.db`) to ensure Section 4 content is available across all environments.
-- **UX Improvement**: Refined the conversational flow. When a user selects a category like "Erosion Control," Wolf now acknowledges multiple options (Section 4 Soil Management vs. Stockpile Management) instead of defaulting to a single choice.
+## 2026-03-14 - Google Workspace & Natural Language Search
+- **Briefing Engine Live**: Successfully completed OAuth handshake for `paulevansopenclaw@gmail.com`. Wolf now has agentic access to Gmail, Drive, Sheets, and Calendar.
+- **Natural Language Search**: Implemented a smart search bar in the UI. Users can now search by symptoms (e.g., "mud on road") or technical codes (e.g., "SD 6-11").
+- **Section 4 Integration**: Full strategic planning and topsoil management depth added to the database.
 

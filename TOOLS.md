@@ -25,10 +25,11 @@ Things like:
 
 - home-server → 192.168.1.100, user: admin
 
-### TTS
-
-- Preferred voice: "Nova" (warm, slightly British)
-- Default speaker: Kitchen HomePod
+### Google Workspace (gog)
+- **Account:** paulevansopenclaw@gmail.com
+- **Services:** Gmail, Calendar, Drive, Contacts, Sheets, Docs
+- **Keyring Password:** bluebook2026 (Stored as GOG_KEYRING_PASSWORD)
+- **Use case:** Sending weekly briefings and technical reports to Georgina's team.
 ```
 
 ## Why Separate?
