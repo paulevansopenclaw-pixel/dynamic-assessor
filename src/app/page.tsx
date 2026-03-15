@@ -69,19 +69,26 @@ export default function Home() {
           console.log("Loaded modules from DB:", res);
           setModulesList(res as unknown as ModuleData[]);
         } else {
-          console.warn("DB returned empty, loading fallback JSON.");
+          console.warn("DB returned empty, loading fallback data.");
           const data = require('./data.json');
           setModulesList(data.modules as unknown as ModuleData[]);
         }
       } catch (err) {
         console.error("DB load error:", err);
-        console.log("Loading fallback JSON due to error...");
+        console.log("Loading fallback data due to error...");
         const data = require('./data.json');
         setModulesList(data.modules as unknown as ModuleData[]);
       }
     };
     
-    loadModules();
+    // Hardcode fallback immediately if we're on Vercel to avoid the 500 loop
+    if (typeof window !== 'undefined' && window.location.hostname.includes('vercel.app')) {
+      console.log("On Vercel, using immediate fallback...");
+      const data = require('./data.json');
+      setModulesList(data.modules as unknown as ModuleData[]);
+    } else {
+      loadModules();
+    }
   }, []);
 
   const speakText = async (text: string) => {
