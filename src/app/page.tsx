@@ -60,21 +60,24 @@ export default function Home() {
   }, [messages]);
 
   useEffect(() => {
-    // Attempt DB load first
-    getModules().then(res => {
-      if (res && res.length > 0) {
-        console.log("Loaded modules from DB:", res);
-        setModulesList(res as unknown as ModuleData[]);
-      } else {
-        console.warn("DB returned empty, loading fallback JSON.");
+    // Attempt DB load first via async action
+    const loadModules = async () => {
+      try {
+        const res = await getModules();
+        if (res && res.length > 0) {
+          console.log("Loaded modules from DB:", res);
+          setModulesList(res as unknown as ModuleData[]);
+        } else {
+          throw new Error("Empty DB");
+        }
+      } catch (err) {
+        console.error("DB fail, loading fallback JSON:", err);
         const data = require('./data.json');
         setModulesList(data.modules as unknown as ModuleData[]);
       }
-    }).catch(err => {
-      console.error("DB fail, loading fallback JSON:", err);
-      const data = require('./data.json');
-      setModulesList(data.modules as unknown as ModuleData[]);
-    });
+    };
+    
+    loadModules();
   }, []);
 
   const speakText = async (text: string) => {
