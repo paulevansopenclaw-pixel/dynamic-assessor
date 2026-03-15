@@ -155,36 +155,12 @@ export default function Home() {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const speakText = async (text: string) => {
-    if (!voiceEnabled) return;
-    try {
-      const response = await fetch('/api/tts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text }),
-      });
-      if (response.ok) {
-        const blob = await response.blob();
-        const audioUrl = URL.createObjectURL(blob);
-        const audio = new Audio(audioUrl);
-        audio.play();
-      }
-    } catch (err) {
-      console.error("Error playing TTS:", err);
-    }
-  };
-
   const toggleVoice = () => {
-    const newState = !voiceEnabled;
-    setVoiceEnabled(newState);
-    if (newState) {
-      speakText(messages[messages.length - 1].text);
-    }
+    setVoiceEnabled(!voiceEnabled);
   };
 
   const addMessage = (role: "avatar" | "user" | "specs", text: string) => {
     setMessages((prev) => [...prev, { id: Date.now() + Math.random(), role, text }]);
-    if (role === "avatar") speakText(text);
   };
 
   const categories = Array.from(new Set(modulesList.map(m => m.category))).filter(c => c && c !== "Uncategorized").sort();
@@ -346,19 +322,6 @@ export default function Home() {
 
   const handleBranchSelect = (branchKey: string, branchAnswer: string) => {
     addMessage("user", branchKey.replace(/_/g, " "));
-    const isCritical = /(stop|violation|failed|immediately|fine|failed)/i.test(branchAnswer);
-
-    if (isCritical && selectedModule && selectedScenario) {
-      fetch("/api/slack", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          moduleName: selectedModule.module_name, 
-          issue: Array.isArray(selectedScenario.symptom) ? selectedScenario.symptom.join(", ") : selectedScenario.symptom, 
-          answer: branchAnswer 
-        }),
-      }).catch(console.error);
-    }
     
     setTimeout(() => {
       const compliance = selectedModule ? ` (Ref: ${selectedModule.compliance_anchor})` : "";
@@ -441,7 +404,7 @@ export default function Home() {
           ? modulesList.filter(m => 
               m.module_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
               m.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-              m.scenarios.some(s => s.symptom.some(sym => sym.toLowerCase().includes(searchQuery.toLowerCase())))
+              m.scenarios.some(s => s.symptom.some(sym => sym.toLowerCase().includes(query.toLowerCase())))
             )
           : modulesList.filter(m => m.category === selectedCategory);
 
@@ -533,16 +496,6 @@ export default function Home() {
             </div>
             <span className="text-[0.65rem] text-white/40 font-bold tracking-[0.2em] uppercase mt-0.5">Dynamic Assessor v2.6</span>
           </div>
-          <button 
-            onClick={toggleVoice} 
-            className={`p-2.5 rounded-2xl transition-all border ${voiceEnabled ? 'bg-orange-500/20 border-orange-500/50 text-orange-400' : 'bg-white/5 border-white/10 text-white/40'}`}
-          >
-            {voiceEnabled ? (
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
-            ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="1" y1="1" x2="23" y2="23"/><path d="M9 9l-2 2H2v6h5l4 4V11"/><path d="M15.54 15.54a5 5 0 0 0 0-7.07"/><path d="M19.07 19.07a10 10 0 0 0 0-14.14"/></svg>
-            )}
-          </button>
         </div>
 
         {/* Visual Viewport */}
@@ -562,29 +515,6 @@ export default function Home() {
 
         {/* Chat Log */}
         <div className="flex-1 overflow-y-auto p-5 space-y-5 no-scrollbar flex flex-col pt-8">
-          {selectedScenario?.symptom.some(s => s.toLowerCase().includes('fence')) && currentState !== 'PICK_CATEGORY' && (
-            <>
-              <TechnicalDiagram type="sediment-fence" />
-              <VideoSandbox />
-            </>
-          )}
-          {selectedScenario?.symptom.some(s => s.toLowerCase().includes('dam')) && currentState !== 'PICK_CATEGORY' && (
-            <TechnicalDiagram type="check-dam" />
-          )}
-          {selectedScenario?.symptom.some(s => s.toLowerCase().includes('inlet') || s.toLowerCase().includes('kerb')) && currentState !== 'PICK_CATEGORY' && (
-            <TechnicalDiagram type="inlet-protection" />
-          )}
-          {selectedScenario?.symptom.some(s => s.toLowerCase().includes('basin') || s.toLowerCase().includes('silt')) && currentState !== 'PICK_CATEGORY' && (
-            <div className="bg-white/5 p-4 rounded-2xl border border-white/10 mb-4">
-              <h4 className="text-orange-400 font-bold text-xs tracking-widest uppercase mb-4">Basin Silt Zone (50% Trigger)</h4>
-              <div className="w-full h-24 bg-blue-900/20 rounded-xl relative overflow-hidden border border-blue-500/30">
-                <div className="absolute bottom-0 left-0 w-full h-1/2 bg-orange-950/40 border-t border-orange-500/50"></div>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-[10px] font-mono text-orange-400 font-bold tracking-tighter uppercase">Clean-out Mark reached</span>
-                </div>
-              </div>
-            </div>
-          )}
           {messages.map((msg) => (
             <div key={msg.id} className={`flex flex-col ${msg.role === "user" ? "items-end" : "items-start"} animate-fade-in`}>
               <div className={`px-4 py-3 rounded-[1.5rem] max-w-[88%] text-[0.95rem] leading-relaxed ${
