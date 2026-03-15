@@ -160,6 +160,7 @@ export default function Home() {
   }, [messages]);
 
   /*
+  /*
   useEffect(() => {
     // 🐺 HARD-CODED BLUE BOOK DATA - Bulletproof loading
     // This is the source of truth for the site UI to bypass Vercel/Prisma issues
@@ -267,6 +268,7 @@ export default function Home() {
 
     setModulesList(staticModules);
   }, []);
+  */
   */
 
   /*
