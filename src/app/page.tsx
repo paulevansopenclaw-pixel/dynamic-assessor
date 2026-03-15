@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import SitePlanOverlay from "./components/SitePlanOverlay";
 
 interface Scenario {
   id: string;
@@ -470,6 +471,7 @@ export default function Home() {
         </div>
 
         <div className="flex-1 overflow-y-auto p-5 space-y-5 no-scrollbar flex flex-col pt-8">
+          {currentState === "PICK_CATEGORY" && <SitePlanOverlay />}
           {messages.map((msg) => (
             <div key={msg.id} className={`flex flex-col ${msg.role === "user" ? "items-end" : "items-start"} animate-fade-in`}>
               <div className={`px-4 py-3 rounded-[1.5rem] max-w-[88%] text-[0.95rem] leading-relaxed ${
