@@ -79,7 +79,7 @@ export default function Home() {
     const fallbackData = require('./data.json');
     setModulesList(fallbackData.modules as unknown as ModuleData[]);
     
-    loadModules();
+    // loadModules(); // Temporarily disabled to debug 500 loop
   }, []);
 
   const speakText = async (text: string) => {
