@@ -41,7 +41,107 @@ export default function Home() {
   ]);
   
   const [currentState, setCurrentState] = useState<AppState>("PICK_CATEGORY");
-  const [modulesList, setModulesList] = useState<ModuleData[]>([]);
+  const [modulesList, setModulesList] = useState<ModuleData[]>([
+    {
+      id: "static_01",
+      module_name: "Erosion_Control_Management_of_Soils",
+      category: "Erosion Control",
+      compliance_anchor: "Landcom Blue Book Vol 1, 4th Edition - Section 4",
+      scenarios: [
+        {
+          id: "ec_401",
+          symptom: ["Introduction to Soil Management"],
+          diagnostic_question: "Are you familiar with the general principles of erosion control as outlined in Section 4.1?",
+          technical_specs: "Erosion control is the first line of defense; sediment control is the last.",
+          branches: {
+            "need_overview": "Section 4.1 emphasizes that erosion control (preventing soil detachment) is more cost-effective than sediment control (capturing detached soil)."
+          }
+        },
+        {
+          id: "ec_4032",
+          symptom: ["Topsoil Handling Procedures"],
+          diagnostic_question: "How is the topsoil being managed according to Section 4.3.2?",
+          technical_specs: "Topsoil stripping max height: 2m.",
+          branches: {
+            "stripping_and_stockpiling": "Topsoil should be stripped from all areas and stockpiled separately. Protect from erosion by location or cover.",
+            "stockpile_specs": "Topsoil stockpiles must be < 2m high and located away from drainage lines."
+          }
+        }
+      ]
+    },
+    {
+      id: "static_02",
+      module_name: "Sediment_Fence_Troubleshooting",
+      category: "Sediment Control",
+      compliance_anchor: "Landcom Blue Book Vol 1, 4th Edition",
+      scenarios: [
+        {
+          id: "sf_001",
+          symptom: ["overflowing", "bowing", "collapsing"],
+          diagnostic_question: "Is the water overtopping the fabric, or is the fence physically bowing under the weight?",
+          technical_specs: "Max catchment: 0.6ha per 100m. Max picket spacing: 2.5m.",
+          branches: {
+            "overtopping": "Check the catchment area. A single sediment fence can only handle 0.6 hectares per 100 meters.",
+            "bowing": "Check your star picket spacing. They must be spaced no further than 2.5 meters apart."
+          }
+        }
+      ]
+    },
+    {
+      id: "static_03",
+      module_name: "Stockpile_Management",
+      category: "Erosion Control",
+      compliance_anchor: "Landcom Blue Book Vol 1, 4th Edition - Section 4.3.2",
+      scenarios: [
+        {
+          id: "sp_001",
+          symptom: ["dust blowing off", "sediment washing into street", "stockpile bare"],
+          diagnostic_question: "Has this stockpile been inactive for more than 10 days?",
+          technical_specs: "Inactive > 10 days requires cover. Fence must be 2m from base.",
+          branches: {
+            "inactive_no_fence": "Violation. Stockpiles inactive for > 10 days must be covered and have a sediment fence on the downslope.",
+            "active_no_fence": "Install a sediment fence 2 meters from the downslope base to catch runoff."
+          }
+        }
+      ]
+    },
+    {
+      id: "static_04",
+      module_name: "Sediment_Basin_Maintenance",
+      category: "Maintenance",
+      compliance_anchor: "Landcom Blue Book Vol 1, 4th Edition - Section 6.3.3",
+      scenarios: [
+        {
+          id: "bm_001",
+          symptom: ["sediment level high", "marker peg submerged"],
+          diagnostic_question: "Is the sediment level at or above the 'clean out' mark?",
+          technical_specs: "Basins must be cleaned when sediment exceeds 50% capacity.",
+          branches: {
+            "above_mark": "Immediate maintenance required. Desilt the basin and dispose of sediment safely.",
+            "below_mark": "Compliance maintained. Check the flocculant station."
+          }
+        }
+      ]
+    },
+    {
+      id: "static_05",
+      module_name: "Inlet_Protection",
+      category: "Sediment Control",
+      compliance_anchor: "Landcom Blue Book Vol 1, 4th Edition - Section 6.3.3.4",
+      scenarios: [
+        {
+          id: "ip_001",
+          symptom: ["sediment entering gully", "inlet choked"],
+          diagnostic_question: "What type of inlet protection is installed: SAG bags or a filter sock?",
+          technical_specs: "SAG bags must have 75mm gap for overflow.",
+          branches: {
+            "sag_bags_choked": "Replace aggregate. Maintain 75mm gap for bypass overflow.",
+            "sock_bypassing": "Re-seat and weight the sock to prevent under-flow."
+          }
+        }
+      ]
+    }
+  ]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedModule, setSelectedModule] = useState<ModuleData | null>(null);
   const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(null);
@@ -60,36 +160,6 @@ export default function Home() {
   }, [messages]);
 
   /*
-  useEffect(() => {
-    // Attempt DB load first via async action
-    const loadModules = async () => {
-      try {
-        console.log("Fetching modules from DB...");
-        // Explicitly check for DB avail before calling server action
-        const res = await getModules();
-        if (res && res.length > 0) {
-          console.log("Loaded modules from DB:", res);
-          setModulesList(res as unknown as ModuleData[]);
-        }
-      } catch (err) {
-        console.error("DB load error:", err);
-      }
-    };
-    
-    // Always start with fallback data
-    try {
-      const fallbackData = require('./data.json');
-      if (fallbackData && fallbackData.modules) {
-        setModulesList(fallbackData.modules as unknown as ModuleData[]);
-      }
-    } catch (e) {
-      console.error("Critical: Failed to load data.json fallback", e);
-    }
-    
-    // loadModules(); // Temporarily disabled to debug 500 loop
-  }, []);
-  */
-
   useEffect(() => {
     // 🐺 HARD-CODED BLUE BOOK DATA - Bulletproof loading
     // This is the source of truth for the site UI to bypass Vercel/Prisma issues
@@ -197,6 +267,7 @@ export default function Home() {
 
     setModulesList(staticModules);
   }, []);
+  */
 
   /*
   useEffect(() => {
