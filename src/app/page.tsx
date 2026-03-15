@@ -240,31 +240,10 @@ export default function Home() {
     }, 600);
   };
 
-  const generateVisual = async (scenario: Scenario) => {
-    setIsGeneratingImage(true);
-    try {
-      const prompt = `A highly realistic technical construction photo showing: ${scenario.symptom.join(", ")}`;
-      const res = await fetch("/api/generate-image", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt }),
-      });
-      if (res.ok) {
-        const data = await res.json();
-        if (data.imageUrl) setImageUrl(data.imageUrl);
-      }
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setIsGeneratingImage(false);
-    }
-  };
-
   const handleSymptomSelect = (scenario: Scenario) => {
     const userText = Array.isArray(scenario.symptom) ? scenario.symptom.join(" / ") : "This issue";
     addMessage("user", userText);
     setSelectedScenario(scenario);
-    generateVisual(scenario);
     
     setTimeout(() => {
       addMessage("avatar", scenario.diagnostic_question);
@@ -377,12 +356,6 @@ export default function Home() {
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                 </button>
               </div>
-              <div className="bg-blue-500/10 rounded-2xl border border-blue-500/20 shrink-0">
-                <label className="flex items-center justify-center p-3 cursor-pointer">
-                  <span className="text-xl">📸</span>
-                  <input type="file" accept="image/*" onChange={handleVisionUpload} className="hidden" />
-                </label>
-              </div>
             </div>
             
             <div className="grid grid-cols-1 gap-3">
@@ -481,13 +454,11 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-black flex items-center justify-center p-4 font-sans text-white antialiased">
-      {/* Background ambient glows */}
       <div className="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-900/20 rounded-full blur-[120px] -z-10"></div>
       <div className="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-orange-900/10 rounded-full blur-[120px] -z-10"></div>
 
       <div className="glass-panel w-full max-w-md h-[90vh] rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden relative border border-white/10">
         
-        {/* Header */}
         <div className="bg-white/5 backdrop-blur-xl text-white p-6 pb-4 flex items-center justify-between z-20 border-b border-white/5">
           <div className="flex flex-col">
             <div className="flex items-center gap-2">
@@ -498,22 +469,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Visual Viewport */}
-        {(imageUrl || isGeneratingImage) && (
-          <div className="w-full bg-black/40 h-[220px] shrink-0 border-b border-white/5 relative group overflow-hidden">
-            {isGeneratingImage ? (
-              <div className="flex flex-col h-full w-full items-center justify-center gap-3">
-                <div className="w-8 h-8 border-4 border-orange-500/30 border-t-orange-500 rounded-full animate-spin"></div>
-                <div className="text-white/30 font-bold text-xs tracking-widest uppercase">Analyzing Site Condition...</div>
-              </div>
-            ) : (
-              <img src={imageUrl!} alt="Scenario visual" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-            )}
-            <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-black/80 to-transparent pointer-events-none"></div>
-          </div>
-        )}
-
-        {/* Chat Log */}
         <div className="flex-1 overflow-y-auto p-5 space-y-5 no-scrollbar flex flex-col pt-8">
           {messages.map((msg) => (
             <div key={msg.id} className={`flex flex-col ${msg.role === "user" ? "items-end" : "items-start"} animate-fade-in`}>
@@ -529,7 +484,6 @@ export default function Home() {
           <div ref={chatEndRef} />
         </div>
 
-        {/* Controls Overlay */}
         <div className="p-6 bg-black/40 backdrop-blur-2xl border-t border-white/10 flex flex-col gap-4 pb-12 max-h-[45vh] overflow-y-auto no-scrollbar shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
           {renderChoices()}
         </div>
