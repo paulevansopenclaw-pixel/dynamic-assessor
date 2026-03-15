@@ -63,15 +63,19 @@ export default function Home() {
     // Attempt DB load first via async action
     const loadModules = async () => {
       try {
+        console.log("Fetching modules from DB...");
         const res = await getModules();
         if (res && res.length > 0) {
           console.log("Loaded modules from DB:", res);
           setModulesList(res as unknown as ModuleData[]);
         } else {
-          throw new Error("Empty DB");
+          console.warn("DB returned empty, loading fallback JSON.");
+          const data = require('./data.json');
+          setModulesList(data.modules as unknown as ModuleData[]);
         }
       } catch (err) {
-        console.error("DB fail, loading fallback JSON:", err);
+        console.error("DB load error:", err);
+        console.log("Loading fallback JSON due to error...");
         const data = require('./data.json');
         setModulesList(data.modules as unknown as ModuleData[]);
       }
