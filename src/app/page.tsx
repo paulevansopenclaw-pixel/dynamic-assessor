@@ -166,35 +166,6 @@ export default function Home() {
 
   const categories = Array.from(new Set(modulesList.map(m => m.category))).filter(c => c && c !== "Uncategorized").sort();
 
-  const handleVisionUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onloadend = async () => {
-      const base64 = reader.result as string;
-      setImageUrl(base64);
-      setIsAnalyzing(true);
-      addMessage("user", "Analyzing site photo for guidance...");
-
-      try {
-        const res = await fetch("/api/vision", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ image: base64, text: "Check site controls" }),
-        });
-        const data = await res.json();
-        setVisionAnalysis(data.analysis);
-        addMessage("avatar", data.analysis || "I've analyzed the photo. The controls look standard, but ensure your Star pickets are at 3m MAX spacing.");
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setIsAnalyzing(false);
-      }
-    };
-    reader.readAsDataURL(file);
-  };
-
   const handleCategorySelect = (cat: string) => {
     addMessage("user", cat || "General Controls");
     setSelectedCategory(cat);
