@@ -1,9 +1,6 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import TechnicalDiagram from "./components/TechnicalDiagram";
-import VideoSandbox from "./components/VideoSandbox";
-import SedimentBasinMarker from "./components/SedimentBasinMarker";
 
 interface Scenario {
   id: string;
@@ -40,7 +37,7 @@ export default function Home() {
   ]);
   
   const [currentState, setCurrentState] = useState<AppState>("PICK_CATEGORY");
-  const [modulesList, setModulesList] = useState<ModuleData[]>([
+  const [modulesList] = useState<ModuleData[]>([
     {
       id: "static_01",
       module_name: "Erosion_Control_Management_of_Soils",
@@ -578,7 +575,15 @@ export default function Home() {
             <TechnicalDiagram type="inlet-protection" />
           )}
           {selectedScenario?.symptom.some(s => s.toLowerCase().includes('basin') || s.toLowerCase().includes('silt')) && currentState !== 'PICK_CATEGORY' && (
-            <SedimentBasinMarker fillLevel={65} />
+            <div className="bg-white/5 p-4 rounded-2xl border border-white/10 mb-4">
+              <h4 className="text-orange-400 font-bold text-xs tracking-widest uppercase mb-4">Basin Silt Zone (50% Trigger)</h4>
+              <div className="w-full h-24 bg-blue-900/20 rounded-xl relative overflow-hidden border border-blue-500/30">
+                <div className="absolute bottom-0 left-0 w-full h-1/2 bg-orange-950/40 border-t border-orange-500/50"></div>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-[10px] font-mono text-orange-400 font-bold tracking-tighter uppercase">Clean-out Mark reached</span>
+                </div>
+              </div>
+            </div>
           )}
           {messages.map((msg) => (
             <div key={msg.id} className={`flex flex-col ${msg.role === "user" ? "items-end" : "items-start"} animate-fade-in`}>
