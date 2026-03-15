@@ -76,8 +76,12 @@ export default function Home() {
     };
     
     // Always start with fallback data
-    const fallbackData = require('./data.json');
-    setModulesList(fallbackData.modules as unknown as ModuleData[]);
+    try {
+      const fallbackData = require('./data.json');
+      setModulesList(fallbackData.modules as unknown as ModuleData[]);
+    } catch (e) {
+      console.error("Critical: Failed to load data.json fallback", e);
+    }
     
     // loadModules(); // Temporarily disabled to debug 500 loop
   }, []);
