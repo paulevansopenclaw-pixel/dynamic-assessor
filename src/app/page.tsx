@@ -163,6 +163,280 @@ export default function Home() {
     setModulesList(staticData.modules as unknown as ModuleData[]);
   }, []);
 
+  /*
+  useEffect(() => {
+    // Attempt DB load first via async action
+    const loadModules = async () => {
+      try {
+        console.log("Fetching modules from DB...");
+        // Explicitly check for DB avail before calling server action
+        const res = await getModules();
+        if (res && res.length > 0) {
+          console.log("Loaded modules from DB:", res);
+          setModulesList(res as unknown as ModuleData[]);
+        }
+      } catch (err) {
+        console.error("DB load error:", err);
+      }
+    };
+    
+    // Always start with fallback data
+    try {
+      const data = {
+  "project": "Dynamic Assessor",
+  "version": "2.1.0",
+  "modules": [
+    {
+      "module_name": "Erosion_Control_Management_of_Soils",
+      "category": "Erosion Control",
+      "compliance_anchor": "Landcom Blue Book Vol 1, 4th Edition - Section 4",
+      "scenarios": [
+        {
+          "id": "ec_401",
+          "symptom": [
+            "Introduction to Soil Management"
+          ],
+          "diagnostic_question": "Are you familiar with the general principles of erosion control as outlined in Section 4.1?",
+          "technical_specs": "Erosion control is the first line of defense; sediment control is the last.",
+          "branches": {
+            "need_overview": "Section 4.1 emphasizes that erosion control (preventing soil detachment) is more cost-effective than sediment control (capturing detached soil)."
+          }
+        },
+        {
+          "id": "ec_402",
+          "symptom": [
+            "Planning Considerations"
+          ],
+          "diagnostic_question": "Does the project planning (4.2) account for soil characteristics and site constraints?",
+          "technical_specs": "Planning must occur before disturbance to minimize total site exposure.",
+          "branches": {
+            "planning_details": "Section 4.2 requires staging works to minimize the area of soil exposed at any one time and scheduling works during periods of low erosivity where possible."
+          }
+        },
+        {
+          "id": "ec_403",
+          "symptom": [
+            "Handling Soils & General Guidelines"
+          ],
+          "diagnostic_question": "Are you following the general erosion control guidelines (4.3.1) for soil handling?",
+          "technical_specs": "Disturb as little area as possible. Diversion banks should be used to isolate 'clean' water from 'dirty' sites.",
+          "branches": {
+            "handling_guidelines": "Section 4.3.1 guidelines: 1. Minimise disturbance. 2. Divert run-on around the site. 3. Control runoff through the site."
+          }
+        },
+        {
+          "id": "ec_4032",
+          "symptom": [
+            "Topsoil Handling Procedures"
+          ],
+          "diagnostic_question": "How is the topsoil being managed according to Section 4.3.2?",
+          "technical_specs": "Topsoil must be stripped and stockpiled separately from subsoil. Max height for topsoil stockpiles: 2m.",
+          "branches": {
+            "stripping_and_stockpiling": "Topsoil should be stripped from all areas to be disturbed and stockpiled separately. It must be protected from erosion by location, cover, or seeding.",
+            "stockpile_specs": "Topsoil stockpiles must be < 2m high to prevent anaerobic conditions. They must be located away from drainage lines and have sediment protection."
+          }
+        },
+        {
+          "id": "ec_4041",
+          "symptom": [
+            "Assessment of Erosion Hazard"
+          ],
+          "diagnostic_question": "Has an erosion hazard assessment (4.4.1) been conducted for the SWMP?",
+          "technical_specs": "Hazard is based on soil type, slope, and rainfall erosivity (R-factor).",
+          "branches": {
+            "hazard_assessment": "Section 4.4.1 requires assessing the site's vulnerability. High hazard sites require more robust controls and frequent inspections."
+          }
+        },
+        {
+          "id": "ec_4042",
+          "symptom": [
+            "Management of Sites of Erosion Hazard"
+          ],
+          "diagnostic_question": "Is there a management plan (4.4.2) for identified high-hazard erosion sites?",
+          "technical_specs": "High-hazard areas require immediate stabilization and specific runoff controls.",
+          "branches": {
+            "management_strategies": "For high-hazard sites, Section 4.4.2 mandates rapid progressive stabilization and the use of site-specific controls like rock-lined channels or polymer binders."
+          }
+        }
+      ]
+    },
+    {
+      "module_name": "Sediment_Fence_Troubleshooting",
+      "category": "Sediment Control",
+      "compliance_anchor": "Landcom Blue Book Vol 1, 4th Edition",
+      "scenarios": [
+        {
+          "id": "sf_001",
+          "symptom": [
+            "overflowing",
+            "bowing",
+            "collapsing"
+          ],
+          "diagnostic_question": "Is the water overtopping the fabric, or is the fence physically bowing under the weight?",
+          "technical_specs": "Max catchment: 0.6ha per 100m. Max picket spacing: 2.5m.",
+          "branches": {
+            "overtopping": "Check the catchment area. A single sediment fence can only handle 0.6 hectares per 100 meters.",
+            "bowing": "Check your star picket spacing. They must be spaced no further than 2.5 meters apart."
+          }
+        },
+        {
+          "id": "sf_002",
+          "symptom": [
+            "washing underneath",
+            "undercutting",
+            "gap at the bottom"
+          ],
+          "diagnostic_question": "Was the geofabric trenched 150mm into the soil and backfilled, or just pinned to the surface?",
+          "technical_specs": "Geofabric must be trenched 150mm deep and backfilled with compacted soil.",
+          "branches": {
+            "pinned": "The installation has failed. You must re-trench the fabric 150mm deep and backfill it with compacted soil."
+          }
+        }
+      ]
+    },
+    {
+      "module_name": "Stockpile_Management",
+      "category": "Erosion Control",
+      "compliance_anchor": "Landcom Blue Book Vol 1, 4th Edition - Section 4.3.2",
+      "scenarios": [
+        {
+          "id": "sp_001",
+          "symptom": [
+            "dust blowing off",
+            "sediment washing into street",
+            "stockpile bare"
+          ],
+          "diagnostic_question": "Has this stockpile been inactive for more than 10 days, and is there a sediment fence installed on the downslope?",
+          "technical_specs": "Inactive > 10 days requires cover/seeding. Fence must be 2m from downslope base.",
+          "branches": {
+            "inactive_no_fence": "Violation. Stockpiles inactive for > 10 days must be covered or seeded, and must have a sediment fence on the downslope side.",
+            "active_no_fence": "Even if active, you must install a sediment fence 2 meters from the downslope base to catch runoff.",
+            "inactive_with_fence": "Fence is good, but if it's inactive for > 10 days, you still need to apply a polymer dust binder or hydromulch."
+          }
+        }
+      ]
+    },
+    {
+      "module_name": "Sediment_Basin_Maintenance",
+      "category": "Maintenance",
+      "compliance_anchor": "Landcom Blue Book Vol 1, 4th Edition - Section 6.3.3",
+      "scenarios": [
+        {
+          "id": "bm_001",
+          "symptom": [
+            "sediment level high",
+            "marker peg submerged",
+            "basin capacity low"
+          ],
+          "diagnostic_question": "Is the sediment level at or above the 'clean out' mark on the sediment marker peg?",
+          "technical_specs": "Basins must be cleaned when sediment exceeds 50% of the sediment storage zone capacity.",
+          "branches": {
+            "above_mark": "Immediate maintenance required. Desilt the basin and dispose of sediment in a stable location where it cannot wash back into the system.",
+            "below_mark": "Compliance maintained. However, check the flocculant station to ensure it is ready for the next event."
+          }
+        }
+      ]
+    },
+    {
+      "module_name": "Construction_Exits",
+      "category": "Maintenance",
+      "compliance_anchor": "Landcom Blue Book Vol 1, 4th Edition - Section 7.1.1",
+      "scenarios": [
+        {
+          "id": "ce_001",
+          "symptom": [
+            "mud on the public road",
+            "shaker pad blinded over",
+            "trucks tracking dirt"
+          ],
+          "diagnostic_question": "Is the exit aggregate clean and at least 200mm deep, or is it completely choked with mud?",
+          "technical_specs": "Shaker pad must be 50-75mm aggregate, at least 200mm deep on geotextile base.",
+          "branches": {
+            "choked_with_mud": "The shaker pad has failed. You must excavate the rock and install fresh aggregate at least 200mm deep.",
+            "mud_on_road": "Stop operations. Deploy a street sweeper immediately. Mud on public roads is a major EPA fine."
+          }
+        }
+      ]
+    },
+    {
+      "module_name": "Inlet_Protection",
+      "category": "Sediment Control",
+      "compliance_anchor": "Landcom Blue Book Vol 1, 4th Edition - Section 6.3.3.4",
+      "scenarios": [
+        {
+          "id": "ip_001",
+          "symptom": [
+            "sediment entering gully",
+            "inlet choked with silt",
+            "curb inlet bypassing"
+          ],
+          "diagnostic_question": "What type of inlet protection is installed: SAG bags, sediment fence, or a filter sock?",
+          "technical_specs": "SAG bags must have 75mm gap for overflow. Socks must be secured with 1.5kg/m weight.",
+          "branches": {
+            "sag_bags_choked": "If the bags are choked, you must replace the aggregate. Ensure a 75mm gap is maintained for emergency bypass overflow.",
+            "sock_bypassing": "The filter sock has failed to seal. Re-seat the sock and ensure it is properly weighted to prevent under-flow.",
+            "no_protection": "Immediate violation. Install temporary inlet protection (SAG bags or socks) before the next rain event."
+          }
+        }
+      ]
+    },
+    {
+      "module_name": "Progressive_Rehabilitation",
+      "category": "Planning",
+      "compliance_anchor": "Landcom Blue Book Vol 1, 4th Edition - Section 4.3",
+      "scenarios": [
+        {
+          "id": "pl_001",
+          "symptom": [
+            "large exposed earth areas",
+            "no active works in area",
+            "delayed stabilization"
+          ],
+          "diagnostic_question": "Has the C-factor (soil cover) been established within the required timeframe after earthworks ceased?",
+          "technical_specs": "Rehabilitation must achieve a C-factor of 0.1 (60% cover) within 20 days of inactivity.",
+          "branches": {
+            "exceeded_20_days": "Violation. You must apply temporary stabilization (e.g., polymer binders, hydromulch, or sterile cover crops) immediately to achieve 60% ground cover.",
+            "under_20_days": "You are within the compliance window, but you must have a stabilization plan scheduled before the 20-day limit expires.",
+            "cover_applied_but_thin": "If the cover is visibly thin, the C-factor is likely >0.1. Reapply seed/mulch to reach the 60% minimum coverage."
+          }
+        }
+      ]
+    },
+    {
+      "module_name": "Dewatering_Operations",
+      "category": "Compliance",
+      "compliance_anchor": "Landcom Blue Book Vol 1, 4th Edition - Section 6.3.3",
+      "scenarios": [
+        {
+          "id": "cm_001",
+          "symptom": [
+            "pumping basin water",
+            "discharging to stormwater",
+            "turbid discharge"
+          ],
+          "diagnostic_question": "Has the water been treated with a flocculant and tested for TSS/pH before discharging?",
+          "technical_specs": "Discharge must be < 50mg/L TSS (or 30 NTU) and pH between 6.5 and 8.5.",
+          "branches": {
+            "untreated_and_untested": "STOP PUMPING. Immediate violation. Water must be dosed with Gypsum/PAC and allowed to settle before testing and discharge.",
+            "treated_but_still_turbid": "The flocculant has not settled or the dose was incorrect. Do not discharge. Wait for settling or consult an engineer for re-dosing.",
+            "tested_within_limits": "If TSS is <50mg/L and pH is 6.5-8.5, you may discharge. Ensure you are using a floating skimmer to avoid sucking sludge from the bottom."
+          }
+        }
+      ]
+    }
+  ]
+};
+      if (data && data.modules) {
+        setModulesList(data.modules as unknown as ModuleData[]);
+      }
+    } catch (e) {
+      console.error("Critical: Failed to load inline fallback", e);
+    }
+    
+    // loadModules(); // Temporarily disabled to debug 500 loop
+  }, []);
+  */
+
   const speakText = async (text: string) => {
     if (!voiceEnabled) return;
     try {
