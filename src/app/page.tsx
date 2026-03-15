@@ -81,14 +81,12 @@ export default function Home() {
       }
     };
     
-    // Hardcode fallback immediately if we're on Vercel to avoid the 500 loop
-    if (typeof window !== 'undefined' && window.location.hostname.includes('vercel.app')) {
-      console.log("On Vercel, using immediate fallback...");
-      const data = require('./data.json');
-      setModulesList(data.modules as unknown as ModuleData[]);
-    } else {
-      loadModules();
-    }
+    // On Vercel, the DB connection is often unstable for SQLite.
+    // We'll load the fallback data immediately and then try to "upgrade" to DB data if it works.
+    const fallbackData = require('./data.json');
+    setModulesList(fallbackData.modules as unknown as ModuleData[]);
+    
+    loadModules();
   }, []);
 
   const speakText = async (text: string) => {
