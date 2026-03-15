@@ -78,7 +78,9 @@ export default function Home() {
     // Always start with fallback data
     try {
       const fallbackData = require('./data.json');
-      setModulesList(fallbackData.modules as unknown as ModuleData[]);
+      if (fallbackData && fallbackData.modules) {
+        setModulesList(fallbackData.modules as unknown as ModuleData[]);
+      }
     } catch (e) {
       console.error("Critical: Failed to load data.json fallback", e);
     }
