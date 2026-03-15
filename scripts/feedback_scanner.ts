@@ -33,7 +33,7 @@ async function scanForFeedback() {
       console.log("ℹ️ No new feedback emails found today.");
     }
 
-  } catch (error) {
+  } catch (error: any) {
     console.error("❌ Scanner failed:", error.message);
   }
 }

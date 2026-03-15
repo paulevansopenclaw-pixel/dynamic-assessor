@@ -64,7 +64,7 @@ Stay safe on site,
 
     console.log("✅ Daily workflow complete.");
 
-  } catch (error) {
+  } catch (error: any) {
     console.error("❌ Workflow failed:", error.message);
   }
 }
