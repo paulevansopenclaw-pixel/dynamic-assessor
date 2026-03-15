@@ -60,22 +60,20 @@ export default function Home() {
   }, [messages]);
 
   useEffect(() => {
+    // Attempt DB load first
     getModules().then(res => {
-      console.log("Loaded modules:", res);
       if (res && res.length > 0) {
+        console.log("Loaded modules from DB:", res);
         setModulesList(res as unknown as ModuleData[]);
       } else {
-        console.warn("No modules returned from database, using fallback data.");
-        // Fallback to static data if DB is empty/failing on Vercel
-        import('./data.json').then(data => {
-          setModulesList(data.modules as unknown as ModuleData[]);
-        });
+        console.warn("DB returned empty, loading fallback JSON.");
+        const data = require('./data.json');
+        setModulesList(data.modules as unknown as ModuleData[]);
       }
     }).catch(err => {
-      console.error("Failed to load modules, using fallback:", err);
-      import('./data.json').then(data => {
-        setModulesList(data.modules as unknown as ModuleData[]);
-      });
+      console.error("DB fail, loading fallback JSON:", err);
+      const data = require('./data.json');
+      setModulesList(data.modules as unknown as ModuleData[]);
     });
   }, []);
 
