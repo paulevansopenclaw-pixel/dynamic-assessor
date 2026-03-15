@@ -377,7 +377,7 @@ export default function Home() {
         const currentModules = selectedCategory === "SEARCH_RESULTS" 
           ? modulesList.filter(m => 
               m.module_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-              m.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              m.category.toLowerCase().includes(query.toLowerCase()) ||
               m.scenarios.some(s => s.symptom.some(sym => sym.toLowerCase().includes(query.toLowerCase())))
             )
           : modulesList.filter(m => m.category === selectedCategory);
