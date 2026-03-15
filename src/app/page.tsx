@@ -64,25 +64,18 @@ export default function Home() {
     const loadModules = async () => {
       try {
         console.log("Fetching modules from DB...");
+        // Explicitly check for DB avail before calling server action
         const res = await getModules();
         if (res && res.length > 0) {
           console.log("Loaded modules from DB:", res);
           setModulesList(res as unknown as ModuleData[]);
-        } else {
-          console.warn("DB returned empty, loading fallback data.");
-          const data = require('./data.json');
-          setModulesList(data.modules as unknown as ModuleData[]);
         }
       } catch (err) {
         console.error("DB load error:", err);
-        console.log("Loading fallback data due to error...");
-        const data = require('./data.json');
-        setModulesList(data.modules as unknown as ModuleData[]);
       }
     };
     
-    // On Vercel, the DB connection is often unstable for SQLite.
-    // We'll load the fallback data immediately and then try to "upgrade" to DB data if it works.
+    // Always start with fallback data
     const fallbackData = require('./data.json');
     setModulesList(fallbackData.modules as unknown as ModuleData[]);
     
