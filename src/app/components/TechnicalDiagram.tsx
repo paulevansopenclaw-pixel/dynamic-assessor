@@ -1,7 +1,7 @@
 "use client";
 
 interface DiagramProps {
-  type: 'sediment-fence' | 'check-dam' | 'inlet-protection';
+  type: 'sediment-fence' | 'check-dam' | 'inlet-protection' | 'disturbed-area';
 }
 
 export default function TechnicalDiagram({ type }: DiagramProps) {
@@ -136,6 +136,54 @@ export default function TechnicalDiagram({ type }: DiagramProps) {
         <p className="text-[0.7rem] text-white/40 mt-3 italic leading-tight">
           Blue Book SD 6-11: Geotextile must be securely fastened to prevent it washing into the pit.
         </p>
+      </div>
+    );
+  }
+
+  if (type === 'disturbed-area') {
+    return (
+      <div className="bg-white/5 p-4 rounded-2xl border border-white/10 mb-4">
+        <h4 className="text-orange-400 font-bold text-xs tracking-widest uppercase mb-4">Disturbed Area Management (Section 4)</h4>
+        <svg viewBox="0 0 400 200" className="w-full h-auto drop-shadow-2xl">
+          {/* Slope Profile */}
+          <path d="M0 60 L150 60 L300 160 L400 160" fill="none" stroke="#4a5568" strokeWidth="2" />
+          
+          {/* Disturbed Zone (Highlight) */}
+          <path d="M150 60 L300 160 L300 180 L150 80 Z" fill="rgba(239, 68, 68, 0.2)" stroke="#ef4444" strokeDasharray="4 2" />
+          
+          {/* Diversion Bund (Upslope) */}
+          <path d="M130 60 Q140 30 150 60" fill="#4ade80" stroke="#22c55e" strokeWidth="2" />
+          
+          {/* Catch Drain (Downslope) */}
+          <path d="M300 160 Q310 180 320 160" fill="#60a5fa" stroke="#3b82f6" strokeWidth="2" />
+
+          <g className="text-[10px] fill-white/60 font-mono">
+            <text x="20" y="45" className="fill-green-400">CLEAN WATER DIVERSION</text>
+            <path d="M100 45 L135 50" stroke="green" strokeWidth="1" markerEnd="url(#arrow-green)" />
+            
+            <text x="180" y="110" className="fill-red-400 font-bold">DISTURBED AREA</text>
+            
+            <text x="280" y="150" className="fill-blue-400">DIRTY WATER CATCH</text>
+            
+            <text x="20" y="190" className="fill-white/40 italic">Rule: Minimize exposure time & area.</text>
+          </g>
+
+          <defs>
+            <marker id="arrow-green" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#4ade80" />
+            </marker>
+          </defs>
+        </svg>
+        <div className="mt-3 grid grid-cols-2 gap-2">
+          <div className="bg-green-500/10 p-2 rounded border border-green-500/20">
+            <p className="text-[0.6rem] font-bold text-green-400 uppercase">Diversion</p>
+            <p className="text-[0.6rem] text-white/80">Keep 'Clean' water away from disturbed soil to reduce load.</p>
+          </div>
+          <div className="bg-red-500/10 p-2 rounded border border-red-500/20">
+            <p className="text-[0.6rem] font-bold text-red-400 uppercase">Limit</p>
+            <p className="text-[0.6rem] text-white/80">Max 20 working days for disturbed soil before stabilization.</p>
+          </div>
+        </div>
       </div>
     );
   }
