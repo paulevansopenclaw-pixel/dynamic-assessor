@@ -61,6 +61,7 @@ export default function Home() {
 
   useEffect(() => {
     getModules().then(res => {
+      console.log("Loaded modules:", res);
       setModulesList(res as unknown as ModuleData[]);
     }).catch(err => {
       console.error("Failed to load modules:", err);
