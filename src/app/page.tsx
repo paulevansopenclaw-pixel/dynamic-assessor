@@ -100,7 +100,7 @@ export default function Home() {
     if (role === "avatar") speakText(text);
   };
 
-  const categories = Array.from(new Set(modulesList.map(m => m.category))).sort();
+  const categories = Array.from(new Set(modulesList.map(m => m.category))).filter(c => c && c !== "Uncategorized").sort();
 
   const handleVisionUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
