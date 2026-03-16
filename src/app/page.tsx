@@ -121,6 +121,42 @@ export default function Home() {
       ]
     },
     {
+      id: "static_06",
+      module_name: "Site_Planning_and_Disturbance",
+      category: "Planning",
+      compliance_anchor: "Landcom Blue Book Vol 1, 4th Edition - Section 4.2",
+      scenarios: [
+        {
+          id: "pl_001",
+          symptom: ["large area disturbance", "excessive clearing"],
+          diagnostic_question: "Is the disturbed area exceeding 0.5 hectares at any one time?",
+          technical_specs: "Limit disturbance to 0.5ha or what can be stabilized in 1-2 days.",
+          branches: {
+            "large_area": "Violation of Section 4.2. Staged clearing is mandatory to minimize exposure.",
+            "staged_clearing": "Maintain stabilization within the 0.5ha limit per stage."
+          }
+        }
+      ]
+    },
+    {
+      id: "static_07",
+      module_name: "Site_Stabilization_Compliance",
+      category: "Compliance",
+      compliance_anchor: "Landcom Blue Book Vol 1, 4th Edition - Section 7",
+      scenarios: [
+        {
+          id: "cp_001",
+          symptom: ["bare soil on slopes", "dust complaints"],
+          diagnostic_question: "How long has the slope been left bare?",
+          technical_specs: "Slopes > 2:1 must be stabilized within 10 days of completion.",
+          branches: {
+            "slope_bare_long": "Critical failure. Temporary stabilization (mulch or spray) required immediately.",
+            "slope_active": "Ensure permanent stabilization plan is ready for completion date."
+          }
+        }
+      ]
+    },
+    {
       id: "static_05",
       module_name: "Inlet_Protection",
       category: "Sediment Control",
