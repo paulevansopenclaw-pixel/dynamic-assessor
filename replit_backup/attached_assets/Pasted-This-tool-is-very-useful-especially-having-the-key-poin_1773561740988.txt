@@ -1,0 +1,76 @@
+This tool is very useful, especially having the key points consolidated in one location.
+
+To improve understanding and training value, I would like the ability for users to click on specific Blue Book requirements and view a short visual animation demonstrating what “correct” implementation looks like in the field.
+
+The purpose is to help learners and workers visually understand the standard, not just read the specification.
+
+⸻
+
+Example: Mulching Requirements
+
+When a user clicks on the Mulching requirements, the app should display short animated visuals illustrating each requirement.
+
+Requirement 1 – Straw Mulch Thickness
+Specification:
+Straw mulch must be applied to a minimum thickness of 50 mm, at approximately 2.5 t/ha.
+
+Visual animation:
+Show straw mulch being spread across soil.
+Include a clear measurement indicator showing the mulch layer at 50 mm thickness so the user can visually understand the required depth.
+
+⸻
+
+Requirement 2 – Tack or Crimp on Slopes
+Specification:
+Mulch must be tacked or crimped into the soil surface on slopes to prevent wind blow-off.
+
+Visual animation:
+Show two short examples:
+
+• Tacked mulch – mulch sprayed or bonded to the soil surface.
+• Crimped mulch – mulch mechanically pressed into the soil using a crimping roller.
+
+Each example should clearly demonstrate the difference between the two methods.
+
+⸻
+
+Requirement 3 – Hydromulch Coverage
+Specification:
+Hydromulch must be applied according to manufacturer specifications, typically in 2–3 layers.
+
+Visual animation:
+Show hydromulch being sprayed onto the soil surface, building up layer by layer until 2–3 layers are visible.
+
+⸻
+
+Requirement 4 – Timing of Application
+Specification:
+Mulch must be applied within 24–48 hours after final grading if revegetation is not occurring immediately.
+
+Visual animation:
+Show a short timeline sequence:
+	1.	Final grading completed.
+	2.	Bare soil exposed.
+	3.	Mulch applied within the 24–48 hour timeframe.
+
+This helps demonstrate the importance of timely erosion protection.
+
+⸻
+
+Functional Requirements
+
+The system should:
+
+• Allow users to click on a Blue Book requirement.
+• Display a short animated visual demonstration.
+• Keep animations simple, clear, and instructional.
+• Include labels, measurements, or overlays where helpful (e.g., 50 mm thickness).
+• Ensure visuals focus on what “correct” installation looks like in practice.
+
+⸻
+
+Goal
+
+The goal of this feature is to bridge the gap between written specifications and field practice, making it easier for workers, trainees, and supervisors to understand exactly what compliant work looks like.
+
+⸻

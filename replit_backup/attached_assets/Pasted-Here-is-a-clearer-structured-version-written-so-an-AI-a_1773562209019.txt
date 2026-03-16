@@ -1,0 +1,70 @@
+Here is a clearer, structured version written so an AI agent can easily interpret the feature and implement the logic.
+
+⸻
+
+Feature Request: Smart Incident Reporting with Blue Book Guidance
+
+When reporting an environmental or site incident, the app should allow the user to describe what is going wrong and the potential impacts.
+
+Based on the information entered, the system should then prompt the user with relevant guidance and recommended controls drawn from the Blue Book requirements.
+
+The goal is for the app to assist the user in identifying appropriate environmental controls, rather than just recording the issue.
+
+⸻
+
+Reporting Workflow
+
+Step 1 – Describe the Issue
+
+The user enters a short description of the problem or incident.
+Example:
+“Stockpile is causing dust.”
+
+⸻
+
+Step 2 – Identify the Impact
+
+The user selects or enters the potential environmental impacts. For example:
+	•	Dust leaving the site
+	•	Air quality impacts
+	•	Sediment movement
+	•	Community nuisance
+	•	Loss of material from stockpile
+
+⸻
+
+Step 3 – AI Guidance Based on Blue Book Controls
+
+The app analyses the issue description and suggests possible control measures based on Blue Book guidance.
+
+Example:
+
+Issue entered:
+“Stockpile is causing dust.”
+
+Suggested controls displayed by the app:
+	•	Apply water to stockpile to suppress dust.
+	•	Cover stockpile with tarpaulin or geofabric.
+	•	Reduce stockpile height or reshape to reduce wind exposure.
+	•	Install windbreaks or barriers.
+	•	Apply mulch, stabilisation product, or hydromulch to exposed surfaces.
+	•	Relocate stockpile away from sensitive areas if necessary.
+
+The user can then select which controls are being implemented or add additional actions.
+
+⸻
+
+Functional Requirements
+
+The system should:
+	•	Allow users to describe the problem in simple language.
+	•	Use keywords or AI interpretation to match the issue with relevant Blue Book guidance.
+	•	Provide recommended environmental controls based on best practice.
+	•	Allow users to select recommended actions or add their own.
+	•	Store the issue, impacts, and selected controls in the incident report.
+
+⸻
+
+Goal
+
+The purpose of this feature is to move the tool beyond simple incident reporting and turn it into a decision-support tool that helps site staff apply the correct environmental controls in line with Blue Book requirements.

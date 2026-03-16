@@ -1,0 +1,526 @@
+openapi: 3.1.0
+info:
+  title: Api
+  version: 0.1.0
+  description: BlueBook Worksite Safety API
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: incidents
+    description: Incident reporting
+  - name: hazards
+    description: Hazard reporting
+  - name: nearmisses
+    description: Near miss reporting
+  - name: sites
+    description: Worksite management
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /sites:
+    get:
+      operationId: listSites
+      tags: [sites]
+      summary: List worksites
+      responses:
+        "200":
+          description: List of sites
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Site"
+    post:
+      operationId: createSite
+      tags: [sites]
+      summary: Create a worksite
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSiteRequest"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Site"
+
+  /incidents:
+    get:
+      operationId: listIncidents
+      tags: [incidents]
+      summary: List all incidents
+      parameters:
+        - name: siteId
+          in: query
+          schema:
+            type: integer
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [open, under_investigation, closed]
+      responses:
+        "200":
+          description: List of incidents
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Incident"
+    post:
+      operationId: createIncident
+      tags: [incidents]
+      summary: Report an incident
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateIncidentRequest"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Incident"
+
+  /incidents/{id}:
+    get:
+      operationId: getIncident
+      tags: [incidents]
+      summary: Get incident by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Incident details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Incident"
+    patch:
+      operationId: updateIncident
+      tags: [incidents]
+      summary: Update incident status
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateIncidentRequest"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Incident"
+
+  /hazards:
+    get:
+      operationId: listHazards
+      tags: [hazards]
+      summary: List all hazards
+      parameters:
+        - name: siteId
+          in: query
+          schema:
+            type: integer
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [open, actioned, closed]
+      responses:
+        "200":
+          description: List of hazards
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Hazard"
+    post:
+      operationId: createHazard
+      tags: [hazards]
+      summary: Report a hazard
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateHazardRequest"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Hazard"
+
+  /hazards/{id}:
+    patch:
+      operationId: updateHazard
+      tags: [hazards]
+      summary: Update hazard status
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateHazardRequest"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Hazard"
+
+  /nearmisses:
+    get:
+      operationId: listNearMisses
+      tags: [nearmisses]
+      summary: List all near misses
+      parameters:
+        - name: siteId
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of near misses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/NearMiss"
+    post:
+      operationId: createNearMiss
+      tags: [nearmisses]
+      summary: Report a near miss
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateNearMissRequest"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NearMiss"
+
+  /dashboard:
+    get:
+      operationId: getDashboard
+      tags: [incidents]
+      summary: Get dashboard stats
+      parameters:
+        - name: siteId
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Dashboard statistics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardStats"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+
+    Site:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        address:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, name, address, createdAt]
+
+    CreateSiteRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        address:
+          type: string
+      required: [name, address]
+
+    Incident:
+      type: object
+      properties:
+        id:
+          type: integer
+        siteId:
+          type: integer
+        siteName:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        incidentType:
+          type: string
+          enum: [injury, near_miss, property_damage, environmental, medical_treatment, lost_time, fatality]
+        severity:
+          type: string
+          enum: [low, medium, high, critical]
+        status:
+          type: string
+          enum: [open, under_investigation, closed]
+        location:
+          type: string
+        reportedBy:
+          type: string
+        dateOccurred:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        correctiveActions:
+          type: string
+          nullable: true
+      required: [id, siteId, siteName, title, description, incidentType, severity, status, location, reportedBy, dateOccurred, createdAt]
+
+    CreateIncidentRequest:
+      type: object
+      properties:
+        siteId:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        incidentType:
+          type: string
+          enum: [injury, near_miss, property_damage, environmental, medical_treatment, lost_time, fatality]
+        severity:
+          type: string
+          enum: [low, medium, high, critical]
+        location:
+          type: string
+        reportedBy:
+          type: string
+        dateOccurred:
+          type: string
+          format: date-time
+      required: [siteId, title, description, incidentType, severity, location, reportedBy, dateOccurred]
+
+    UpdateIncidentRequest:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [open, under_investigation, closed]
+        correctiveActions:
+          type: string
+
+    Hazard:
+      type: object
+      properties:
+        id:
+          type: integer
+        siteId:
+          type: integer
+        siteName:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        hazardType:
+          type: string
+          enum: [physical, chemical, biological, ergonomic, psychosocial, electrical, fire, environmental]
+        likelihood:
+          type: integer
+          minimum: 1
+          maximum: 5
+        consequence:
+          type: integer
+          minimum: 1
+          maximum: 5
+        riskRating:
+          type: integer
+        riskLevel:
+          type: string
+          enum: [low, medium, high, extreme]
+        status:
+          type: string
+          enum: [open, actioned, closed]
+        location:
+          type: string
+        reportedBy:
+          type: string
+        controlMeasures:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, siteId, siteName, title, description, hazardType, likelihood, consequence, riskRating, riskLevel, status, location, reportedBy, createdAt]
+
+    CreateHazardRequest:
+      type: object
+      properties:
+        siteId:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        hazardType:
+          type: string
+          enum: [physical, chemical, biological, ergonomic, psychosocial, electrical, fire, environmental]
+        likelihood:
+          type: integer
+          minimum: 1
+          maximum: 5
+        consequence:
+          type: integer
+          minimum: 1
+          maximum: 5
+        location:
+          type: string
+        reportedBy:
+          type: string
+      required: [siteId, title, description, hazardType, likelihood, consequence, location, reportedBy]
+
+    UpdateHazardRequest:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [open, actioned, closed]
+        controlMeasures:
+          type: string
+
+    NearMiss:
+      type: object
+      properties:
+        id:
+          type: integer
+        siteId:
+          type: integer
+        siteName:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        potentialConsequence:
+          type: string
+        location:
+          type: string
+        reportedBy:
+          type: string
+        immediateActions:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, siteId, siteName, title, description, potentialConsequence, location, reportedBy, createdAt]
+
+    CreateNearMissRequest:
+      type: object
+      properties:
+        siteId:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        potentialConsequence:
+          type: string
+        location:
+          type: string
+        reportedBy:
+          type: string
+        immediateActions:
+          type: string
+      required: [siteId, title, description, potentialConsequence, location, reportedBy]
+
+    DashboardStats:
+      type: object
+      properties:
+        totalIncidents:
+          type: integer
+        openIncidents:
+          type: integer
+        totalHazards:
+          type: integer
+        openHazards:
+          type: integer
+        extremeRiskHazards:
+          type: integer
+        totalNearMisses:
+          type: integer
+        criticalIncidents:
+          type: integer
+        recentIncidents:
+          type: array
+          items:
+            $ref: "#/components/schemas/Incident"
+        recentHazards:
+          type: array
+          items:
+            $ref: "#/components/schemas/Hazard"
+      required: [totalIncidents, openIncidents, totalHazards, openHazards, extremeRiskHazards, totalNearMisses, criticalIncidents, recentIncidents, recentHazards]
