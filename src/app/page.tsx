@@ -378,18 +378,32 @@ export default function Home() {
         ));
 
       case "PICK_SYMPTOM":
-        return selectedModule?.scenarios.map((scenario, idx) => (
-          <button key={idx} onClick={() => handleSymptomSelect(scenario)} className="w-full glass-card hover:bg-white/10 text-white text-left px-5 py-4 rounded-2xl shadow-lg transition-all active:scale-[0.98] font-medium text-[1.05rem] border border-white/10">
-            {Array.isArray(scenario.symptom) ? scenario.symptom.join(" / ") : scenario.symptom}
-          </button>
-        ));
+        return (
+          <>
+            {selectedModule?.scenarios.map((scenario, idx) => (
+              <button key={idx} onClick={() => handleSymptomSelect(scenario)} className="w-full glass-card hover:bg-white/10 text-white text-left px-5 py-4 rounded-2xl shadow-lg transition-all active:scale-[0.98] font-medium text-[1.05rem] border border-white/10">
+                {Array.isArray(scenario.symptom) ? scenario.symptom.join(" / ") : scenario.symptom}
+              </button>
+            ))}
+            <button onClick={() => setCurrentState("PICK_MODULE")} className="w-full bg-white/5 border border-white/10 text-white/60 hover:text-white px-5 py-4 rounded-2xl transition-all active:scale-[0.98] font-medium text-[1.05rem] mt-2">
+              None of these choices
+            </button>
+          </>
+        );
 
       case "PICK_BRANCH":
-        return Object.entries(selectedScenario?.branches || {}).map(([key, answer], idx) => (
-          <button key={idx} onClick={() => handleBranchSelect(key, answer as string)} className="w-full glass-card hover:bg-white/10 text-white text-left px-5 py-4 rounded-2xl shadow-lg transition-all active:scale-[0.98] font-medium text-[1.05rem] capitalize border border-white/10">
-            {key.replace(/_/g, " ")}
-          </button>
-        ));
+        return (
+          <>
+            {Object.entries(selectedScenario?.branches || {}).map(([key, answer], idx) => (
+              <button key={idx} onClick={() => handleBranchSelect(key, answer as string)} className="w-full glass-card hover:bg-white/10 text-white text-left px-5 py-4 rounded-2xl shadow-lg transition-all active:scale-[0.98] font-medium text-[1.05rem] capitalize border border-white/10">
+                {key.replace(/_/g, " ")}
+              </button>
+            ))}
+            <button onClick={() => setCurrentState("PICK_SYMPTOM")} className="w-full bg-white/5 border border-white/10 text-white/60 hover:text-white px-5 py-4 rounded-2xl transition-all active:scale-[0.98] font-medium text-[1.05rem] mt-2">
+              None of these choices
+            </button>
+          </>
+        );
 
       case "RESOLUTION":
         return (
