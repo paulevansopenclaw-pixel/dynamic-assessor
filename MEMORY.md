@@ -20,11 +20,10 @@ We are building the Dynamic Assessor app. It replaces the Landcom Bluebook with 
 - **Recent Progress**: Built high-fidelity interactive SVG diagrams for Sediment Fences, Check Dams (SD 5-4), and Gully Pit Inlet Protection (SD 6-11). **Briefing Engine Live**: Connected to Gmail with Georgina (`georginaevans24@gmail.com`) and Paul (`paulevans1975@gmail.com`) as primary recipients. **Automated Workflow**: Set up daily 5:00 PM pushes to Vercel with automatic "What's Changed" briefing emails.
 - **Pending**: Expanded Section 5 technical diagrams (Straw Bales SD 5-1, Earth Basins); Video demonstrating "Good vs Bad" stabilization.
 
-## 2026-03-16 - Section Expansion & UI Logic Fix
-- **Unlocked Sections**: Modified `page.tsx` to explicitly allow "Planning" and "Compliance" buttons on the home screen.
-- **New Modules**: Added static data for "Site Planning and Disturbance" (Planning) and "Site Stabilization Compliance" (Compliance).
-- **Dynamic Diagrams**: Wired `TechnicalDiagram.tsx` to automatically inject specific Blue Book SVGs based on the active module (e.g., Disturbed Area management for Planning).
-- **Vercel Sync**: Pushed latest UI logic to production.
+## 2026-03-17 - Navigation & Site Access UI Update
+- **Site Access Messaging Removed**: Per Georgina's latest feedback, removed all "Site Access" and "Pass Issued" messaging from the app.
+- **Workflow Optimization**: Updated the resolution state to return the user directly to the main category selection page once an issue is finalized.
+- **UI Logic**: Stripped out the "SITE ACCESS GRANTED" card and replaced it with a direct "Issue Resolved" action.
 
 ## 2026-03-14 - Google Workspace & Natural Language Search
 - **Briefing Engine Live**: Successfully completed OAuth handshake for `paulevansopenclaw@gmail.com`. Wolf now has agentic access to Gmail, Drive, Sheets, and Calendar.

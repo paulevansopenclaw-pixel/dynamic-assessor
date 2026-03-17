@@ -303,20 +303,17 @@ export default function Home() {
   };
 
   const handleReset = () => {
-    addMessage("user", "Finish & Request Site Access");
     setImageUrl(null);
     setVisionAnalysis(null);
-    setTimeout(() => {
-      setMessages([{ 
-        id: Date.now(), 
-        role: "avatar", 
-        text: "Access granted. Drive safe out there. What else do you need to look at?" 
-      }]);
-      setCurrentState("PICK_CATEGORY");
-      setSelectedCategory(null);
-      setSelectedModule(null);
-      setSelectedScenario(null);
-    }, 600);
+    setCurrentState("PICK_CATEGORY");
+    setSelectedCategory(null);
+    setSelectedModule(null);
+    setSelectedScenario(null);
+    setMessages([{ 
+      id: Date.now(), 
+      role: "avatar", 
+      text: "Issue resolved. Back to the main menu. What else are we looking at?" 
+    }]);
   };
 
   const renderChoices = () => {
@@ -397,15 +394,8 @@ export default function Home() {
       case "RESOLUTION":
         return (
           <div className="flex flex-col items-center gap-6 py-2">
-            <div className="w-full glass-panel border border-green-500/30 rounded-3xl p-8 text-center shadow-2xl relative overflow-hidden">
-              <div className="absolute top-0 left-0 w-full h-1 bg-green-500/50"></div>
-              <div className="text-5xl mb-4 drop-shadow-md">🪪</div>
-              <div className="text-green-400 font-black text-2xl tracking-tight uppercase mb-1">Pass Issued</div>
-              <div className="text-white/60 text-sm font-medium mb-6">{selectedModule?.module_name.replace(/_/g, " ")}</div>
-              <div className="bg-green-500 text-black py-2 px-6 rounded-full text-xs font-black tracking-widest inline-block shadow-lg">SITE ACCESS GRANTED</div>
-            </div>
             <button onClick={handleReset} className="w-full bg-white text-black hover:bg-gray-200 px-5 py-4 rounded-2xl shadow-xl transition-all active:scale-[0.98] font-bold text-[1.05rem]">
-              ✅ Finalize & Close
+              ✅ Issue Resolved - Back to Home
             </button>
           </div>
         );
