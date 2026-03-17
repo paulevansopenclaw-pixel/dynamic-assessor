@@ -45,13 +45,13 @@ ${changelog}
 - Briefing Engine: Operational
 - Search: Natural Language Search Live
 
-You can view the live app here: https://workspace-three-self.vercel.app
-
 REPLY TO THIS EMAIL:
 If you find any bugs or want to add a specific Blue Book section next, just reply to this email. I will scan the inbox daily and add your notes to my build queue.
 
 Stay safe on site,
 - Wolf (Dynamic Assessor v2.6)
+
+🔗 View the Live App Here: https://workspace-three-self.vercel.app
     `.trim();
 
     // 4. Send the email via gogcli
