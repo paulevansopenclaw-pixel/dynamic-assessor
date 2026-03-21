@@ -23,10 +23,13 @@ We are building the Dynamic Assessor app. It replaces the Landcom Bluebook with 
 ## 2026-03-20 - Build Pivot: Proactive Prevention Focus
 - **Strategic Direction**: Georgina has explicitly defined the core focus of the app: **Incident Prevention over Reporting**. The app must enable cadets to identify potential failures, provide the specific Blue Book requirements for repair/strengthening, and resolve the issue *before* it becomes an incident (e.g., basin flooding, fence collapse).
 - **Technical Goal**: Move the 'Dynamic Assessor' from a reactive compliance tool to a proactive risk-management engine. This will include "Pre-emptive Triage" paths and "Control Strengthening" guidance in the next module build.
+- **Visuals Shift**: Georgina requested "lifelike" photos/window-style images instead of technical pencil sketches to better support site workers. I'm pivoting to image-based scenarios using site reality photos.
+- **UI Cleanup**: Removed unnecessary "Add Icon" buttons from the `SitePlanOverlay` component as they were confusing and cluttered the interface.
 - **SME Top 3 Site Headaches (Georgina's Core Logic)**:
     1.  **Failing Controls / Lack of Understanding**: Personnel don't know what controls are, how they work, or how to maintain them. The app needs a "Verification & Maintenance" layer to check installation correctness and trigger proactive maintenance (e.g., cleaning before failure).
     2.  **Weather Event Prep (Heavy Rain)**: Need a "Storm-Ready" pre-warning system. The app should review the site plan and recommend specific Blue Book controls to check/reinforce *before, during, and after* an event to prevent critical failures like residential flooding. Includes recommending *additional* controls if current ones are at capacity.
     3.  **Dust / Wind Erosion Management**: Hot, windy conditions causing dust clouds due to too much exposed soil and lack of stabilization. The app must guide users to expected actions: stage works, deploy water carts, install temporary covers (hydromulch/binders), and begin progressive revegetation.
+    4.  **Vehicular Dust (Haul Roads)**: Unsealed roads + high traffic + no suppression. Logic will focus on water cart frequency and road surface stabilization.
 - **Weekend Build Goal**: Machine 2 (The Droid) will focus on building out proactive maintenance scenarios for these three headaches, moving the app into active site defense.
 
 ## 2026-03-18 - Dual-Mac Cluster Activation (The Handshake)
