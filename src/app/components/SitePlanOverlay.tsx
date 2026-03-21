@@ -49,12 +49,6 @@ export default function SitePlanOverlay() {
         </label>
       </div>
 
-      <div className="flex gap-2 mb-2">
-        <button onClick={() => addIcon('sediment-fence')} className="bg-orange-600/40 border border-orange-500/50 px-3 py-1.5 rounded-lg text-[10px] font-bold">ADD FENCE</button>
-        <button onClick={() => addIcon('check-dam')} className="bg-blue-600/40 border border-blue-500/50 px-3 py-1.5 rounded-lg text-[10px] font-bold">ADD CHECK DAM</button>
-        <button onClick={() => addIcon('exit')} className="bg-green-600/40 border border-green-500/50 px-3 py-1.5 rounded-lg text-[10px] font-bold">ADD EXIT</button>
-      </div>
-
       <div 
         ref={containerRef}
         className="relative w-full aspect-[4/3] bg-white/5 rounded-2xl overflow-hidden border border-white/5 shadow-inner cursor-crosshair"
