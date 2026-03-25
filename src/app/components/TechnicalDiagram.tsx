@@ -2,9 +2,21 @@
 
 interface DiagramProps {
   type: 'sediment-fence' | 'check-dam' | 'inlet-protection' | 'disturbed-area';
+  imageUrl?: string;
 }
 
-export default function TechnicalDiagram({ type }: DiagramProps) {
+export default function TechnicalDiagram({ type, imageUrl }: DiagramProps) {
+  if (imageUrl) {
+    return (
+      <div className="bg-white/5 p-4 rounded-2xl border border-white/10 mb-4 overflow-hidden">
+        <img src={imageUrl} alt="Site Reality" className="w-full h-auto rounded-xl shadow-2xl" />
+        <p className="text-[0.7rem] text-white/60 mt-3 italic leading-tight">
+          Site reality: {type.replace(/-/g, ' ')} example.
+        </p>
+      </div>
+    );
+  }
+
   if (type === 'sediment-fence') {
     return (
       <div className="bg-white/5 p-4 rounded-2xl border border-white/10 mb-4">
