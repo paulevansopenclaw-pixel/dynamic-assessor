@@ -280,13 +280,20 @@ export default function Home() {
           <div className="p-6 bg-black/40 backdrop-blur-2xl border-t border-white/10 max-h-[45vh] overflow-y-auto no-scrollbar">
              {currentState === "PICK_CATEGORY" && (
                <div className="space-y-3">
-                 <input 
-                  type="text" 
-                  placeholder="Ask me anything about the Bluebook..." 
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 mb-2"
-                  onKeyDown={(e) => e.key === 'Enter' && handleSearch((e.target as HTMLInputElement).value)}
-                />
-                <div className="grid grid-cols-1 gap-2">
+                 <div className="flex gap-2 mb-2">
+                   <input 
+                    type="text" 
+                    id="search-input"
+                    placeholder="Ask me anything about the Bluebook..." 
+                    className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3"
+                    onKeyDown={(e) => e.key === 'Enter' && handleSearch((e.target as HTMLInputElement).value)}
+                  />
+                  <button onClick={() => {
+                    const input = document.getElementById('search-input') as HTMLInputElement;
+                    handleSearch(input.value);
+                  }} className="bg-orange-600 px-4 rounded-xl">🔍</button>
+                 </div>
+                 <div className="grid grid-cols-1 gap-2">
                   {categories.map(cat => (
                     <button key={cat} onClick={() => handleCategorySelect(cat)} className="glass-card w-full p-4 rounded-xl text-left hover:bg-white/10 transition-all">{cat}</button>
                   ))}
