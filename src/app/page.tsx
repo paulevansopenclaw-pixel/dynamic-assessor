@@ -170,6 +170,13 @@ export default function Home() {
 
   // --- UI Components ---
 
+  const renderDiagram = () => {
+    if (selectedModule?.id === "static_02") return <TechnicalDiagram type="sediment-fence" imageUrl="/scenarios/silt-fence-fail.png" />;
+    if (selectedModule?.id === "static_05") return <TechnicalDiagram type="inlet-protection" imageUrl="/scenarios/basin-flood.png" />;
+    if (selectedModule?.id === "static_06") return <TechnicalDiagram type="disturbed-area" imageUrl="/scenarios/dust-clouds.png" />;
+    return null;
+  };
+
   const FieldModeUI = () => (
     <div className="flex flex-col h-full bg-yellow-400 text-black font-bold p-2">
       {/* Search Front & Center */}
@@ -321,6 +328,7 @@ export default function Home() {
                  <div className="bg-orange-600/20 p-4 rounded-xl border border-orange-600/50">
                    <p className="text-orange-400 font-bold uppercase text-xs mb-2">Technical Specs</p>
                    <p className="text-white text-lg">{selectedScenario?.technical_specs}</p>
+                   {renderDiagram()}
                  </div>
                  <button onClick={handleReset} className="w-full bg-white text-black p-4 rounded-xl font-bold">DISMISS</button>
                </div>
