@@ -243,7 +243,17 @@ export default function Home() {
       {/* Navigation Dock */}
       <div className="bg-black p-4 grid grid-cols-3 gap-2 mt-4 rounded-t-3xl">
         <button onClick={handleReset} className="bg-yellow-400 p-4 rounded-xl text-xl">HOME</button>
-        <button className="bg-blue-600 text-white p-4 rounded-xl text-xl">PHOTO</button>
+        <label className="bg-blue-600 text-white p-4 rounded-xl text-xl cursor-pointer flex items-center justify-center">
+          PHOTO
+          <input type="file" accept="image/*" capture="environment" className="hidden" onChange={(e) => {
+             const file = e.target.files?.[0];
+             if (file) {
+               addMessage("user", "Analyzing photo...");
+               // In a real app, this would upload/analyze
+               setTimeout(() => addMessage("avatar", "Photo analyzed. It looks like the fence is bowed. Checking Blue Book..."), 1000);
+             }
+          }} />
+        </label>
         <button onClick={() => setAppMode("ASSISTANT")} className="bg-white p-4 rounded-xl text-xl">MODE</button>
       </div>
     </div>
