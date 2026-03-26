@@ -195,6 +195,18 @@ export default function Home() {
         </label>
       </div>
 
+      {/* Proactive Weather Alerts */}
+      <div className="bg-red-600 text-white p-4 rounded-xl mb-4 animate-pulse shadow-lg">
+        <h3 className="text-xl uppercase tracking-widest">⚠️ WEATHER ALERT: HIGH WINDS</h3>
+        <p className="text-sm font-normal mt-1 opacity-90">Forecast: 40km/h gusts. Pre-emptive check required.</p>
+        <button 
+          onClick={() => handleSearch("Dust")}
+          className="w-full bg-white text-red-600 font-bold p-3 mt-3 rounded-lg uppercase text-sm"
+        >
+          View Wind Checklist
+        </button>
+      </div>
+
       <div className="flex-1 overflow-y-auto space-y-4 px-2">
         {/* Rapid Index / Symptoms */}
         <div className="grid grid-cols-2 gap-4">
