@@ -158,6 +158,8 @@ export default function Home() {
       addMessage("user", `Searching: ${query}`);
       setSelectedCategory("SEARCH");
       setCurrentState("PICK_MODULE");
+    } else {
+        addMessage("avatar", `I couldn't find a module for "${query}". Try searching "Fence" or "Mud".`);
     }
   };
 
