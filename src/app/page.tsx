@@ -187,6 +187,10 @@ export default function Home() {
           className="w-full bg-white text-2xl p-4 rounded-lg uppercase placeholder:text-gray-400"
           onKeyDown={(e) => e.key === 'Enter' && handleSearch((e.target as HTMLInputElement).value)}
         />
+        <label className="mt-2 block bg-white text-black font-bold p-4 rounded-lg text-center cursor-pointer uppercase">
+          Upload Site Plan
+          <input type="file" accept="image/*" className="hidden" />
+        </label>
       </div>
 
       <div className="flex-1 overflow-y-auto space-y-4 px-2">
