@@ -357,6 +357,7 @@ export default function Home() {
                  <div className="bg-orange-600/20 p-4 rounded-xl border border-orange-600/50">
                    <p className="text-orange-400 font-bold uppercase text-xs mb-2">Technical Specs</p>
                    <p className="text-white text-lg">{selectedScenario?.technical_specs}</p>
+                   <p className="text-white/60 text-sm mt-2 italic">Ref: {selectedModule?.compliance_anchor}</p>
                    {renderDiagram()}
                  </div>
                  <button onClick={handleReset} className="w-full bg-white text-black p-4 rounded-xl font-bold">DISMISS</button>
