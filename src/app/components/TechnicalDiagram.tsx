@@ -6,18 +6,46 @@ interface DiagramProps {
 }
 
 export default function TechnicalDiagram({ type, imageUrl }: DiagramProps) {
-  if (imageUrl) {
-    return (
-      <div className="bg-white/5 p-4 rounded-2xl border border-white/10 mb-4 overflow-hidden">
-        <img src={imageUrl} alt="Site Reality" className="w-full h-auto rounded-xl shadow-2xl" />
-        <p className="text-[0.7rem] text-white/60 mt-3 italic leading-tight">
-          Site reality: {type.replace(/-/g, ' ')} example.
-        </p>
+  return (
+    <div className="bg-white/5 p-4 rounded-2xl border border-white/10 mb-4 overflow-hidden space-y-4">
+      {/* 1. Technical Drawing (The "How-To" Blueprint) */}
+      <div className="space-y-2">
+        <h4 className="text-orange-400 font-bold text-xs tracking-widest uppercase">Technical Blueprint</h4>
+        {type === 'sediment-fence' && (
+          <svg viewBox="0 0 400 200" className="w-full h-auto drop-shadow-2xl bg-black/20 rounded-lg">
+             <line x1="0" y1="160" x2="400" y2="160" stroke="#4a5568" strokeWidth="2" />
+             <rect x="100" y="60" width="200" height="100" fill="rgba(249, 115, 22, 0.2)" stroke="#f97316" strokeWidth="2" strokeDasharray="4 2" />
+             <line x1="100" y1="50" x2="100" y2="180" stroke="#fff" strokeWidth="4" strokeLinecap="round" />
+             <line x1="200" y1="50" x2="200" y2="180" stroke="#fff" strokeWidth="4" strokeLinecap="round" />
+             <line x1="300" y1="50" x2="300" y2="180" stroke="#fff" strokeWidth="4" strokeLinecap="round" />
+          </svg>
+        )}
+        {type === 'inlet-protection' && (
+          <svg viewBox="0 0 400 220" className="w-full h-auto drop-shadow-2xl bg-black/20 rounded-lg">
+             <path d="M20 100 L120 100 L120 180 L280 180 L280 100 L380 100" fill="none" stroke="#4a5568" strokeWidth="2" />
+          </svg>
+        )}
+        {type === 'disturbed-area' && (
+          <svg viewBox="0 0 400 200" className="w-full h-auto drop-shadow-2xl bg-black/20 rounded-lg">
+             <path d="M0 60 L150 60 L300 160 L400 160" fill="none" stroke="#4a5568" strokeWidth="2" />
+          </svg>
+        )}
       </div>
-    );
-  }
 
-  if (type === 'sediment-fence') {
+      {/* 2. Site Reality (The "Failure" Photo) */}
+      {imageUrl && (
+        <div className="space-y-2">
+          <h4 className="text-red-400 font-bold text-xs tracking-widest uppercase">Site Reality: What to Avoid</h4>
+          <img src={imageUrl} alt="Site Reality" className="w-full h-auto rounded-lg shadow-2xl border-2 border-red-500/50" />
+        </div>
+      )}
+      
+      <p className="text-[0.7rem] text-white/60 italic leading-tight pt-2 border-t border-white/5">
+        Check your site plan against the blueprint above. Avoid the conditions shown in the site photo.
+      </p>
+    </div>
+  );
+}
     return (
       <div className="bg-white/5 p-4 rounded-2xl border border-white/10 mb-4">
         <h4 className="text-orange-400 font-bold text-xs tracking-widest uppercase mb-4">Interactive Specification</h4>
