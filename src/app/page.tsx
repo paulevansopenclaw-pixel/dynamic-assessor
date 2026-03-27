@@ -174,7 +174,7 @@ export default function Home() {
   // --- UI Components ---
 
   const renderDiagram = () => {
-    if (selectedModule?.id === "static_02") return <TechnicalDiagram type="sediment-fence" imageUrl="/scenarios/silt-fence-fail.png" />;
+    if (selectedModule?.id === "static_02") return <TechnicalDiagram type="sediment-fence" imageUrl="/scenarios/silt-fence-fail.png" blueprintUrl="/scenarios/silt-fence-blueprint.png" />;
     if (selectedModule?.id === "static_05") return <TechnicalDiagram type="inlet-protection" imageUrl="/scenarios/basin-flood.png" />;
     if (selectedModule?.id === "static_06") return <TechnicalDiagram type="disturbed-area" imageUrl="/scenarios/dust-clouds.png" />;
     return null;
