@@ -358,6 +358,17 @@ export default function Home() {
                    <p className="text-orange-400 font-bold uppercase text-xs mb-2">Technical Specs</p>
                    <p className="text-white text-lg">{selectedScenario?.technical_specs}</p>
                    <p className="text-white/60 text-sm mt-2 italic">Ref: {selectedModule?.compliance_anchor}</p>
+                   
+                   {/* ADDED: Proactive/Corrective Action Section */}
+                   <div className="mt-4 pt-4 border-t border-white/10">
+                     <p className="text-orange-400 font-bold uppercase text-xs mb-2">Proactive & Corrective Actions</p>
+                     <ul className="text-white text-sm list-disc pl-4 space-y-1">
+                       {Object.entries(selectedScenario?.branches || {}).map(([key, action]) => (
+                         <li key={key}>{action}</li>
+                       ))}
+                     </ul>
+                   </div>
+
                    {renderDiagram()}
                  </div>
                  <button onClick={handleReset} className="w-full bg-white text-black p-4 rounded-xl font-bold">DISMISS</button>
